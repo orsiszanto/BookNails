@@ -74,7 +74,7 @@ npx react-native run-android   # vagy: npx react-native run-ios
 4. Kattints a **"Run workflow"** → válaszd ki a mérföldkövet → **"Run workflow"**
 5. Az eredmény egy **GitHub Issue**-ban jelenik meg
 
-> ⚠️ Mérföldkőnként **maximum 3 alkalommal** futtathatod az értékelést. Használd bölcsen!  
+> ⚠️ Mérföldkőnként **maximum 2 alkalommal** futtathatod az értékelést. Használd bölcsen!  
 > ⚠️ A határidőkön automatikus értékelés is fut.
 
 ---
