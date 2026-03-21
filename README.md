@@ -2,10 +2,10 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Ew36zBjj)
 # Mobil alkalmazásfejlesztés — Projektmunka
 
-> **Hallgató neve:** _[Írd ide a neved]_  
-> **Neptun kód:** _[Írd ide a Neptun kódod]_  
-> **Projekt téma:** _[Írd ide a választott témát]_  
-> **Keretrendszer:** _[Írd ide a választott keretrendszert, pl. Flutter, React Native, SwiftUI, Kotlin Compose]_
+> **Hallgató neve:** _Szántó Orsolya_  
+> **Neptun kód:** _H93NV2_  
+> **Projekt téma:** _Műkörmös időpontfoglaló alkalmazás_  
+> **Keretrendszer:** _Flutter Firebase_
 
 ---
 
