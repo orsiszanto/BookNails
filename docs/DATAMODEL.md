@@ -130,3 +130,74 @@ h-s azonosító: h378048
 * A foglalási státuszok workflow alapú működést biztosítanak.
 
 ---
+
+## Firestore kollekciószerkezet
+
+```
+firestore/
+├── users/
+│   └── {userId}
+│       ├── name: String
+│       ├── email: String
+│       ├── role: "user" | "nail_artist"
+│       ├── phoneNumber: String
+│       ├── createdAt: Timestamp
+│       └── updatedAt: Timestamp
+│
+├── nail_artist_profiles/
+│   └── {profileId}
+│       ├── userId: Reference → users/{userId}
+│       ├── salonName: String
+│       ├── address: String
+│       ├── phoneNumber: String
+│       ├── profileImageUrl: String (Firebase Storage)
+│       ├── workingHours: Map<String, {start: String, end: String}>
+│       ├── createdAt: Timestamp
+│       └── updatedAt: Timestamp
+│
+├── services/
+│   └── {serviceId}
+│       ├── nailArtistProfileId: Reference → nail_artist_profiles/{profileId}
+│       ├── categoryId: Reference → categories/{categoryId}
+│       ├── name: String
+│       ├── description: String
+│       ├── price: Number
+│       ├── durationMinutes: Number
+│       ├── imageUrl: String (Firebase Storage)
+│       ├── isActive: Boolean
+│       ├── createdAt: Timestamp
+│       └── updatedAt: Timestamp
+│
+├── categories/
+│   └── {categoryId}
+│       ├── name: String
+│       ├── type: "service" | "gallery"
+│       ├── createdAt: Timestamp
+│       └── updatedAt: Timestamp
+│
+├── appointments/
+│   └── {appointmentId}
+│       ├── userId: Reference → users/{userId}
+│       ├── nailArtistProfileId: Reference → nail_artist_profiles/{profileId}
+│       ├── serviceId: Reference → services/{serviceId}
+│       ├── appointmentDate: Date
+│       ├── startTime: String (HH:mm)
+│       ├── requestedDurationMinutes: Number
+│       ├── estimatedDurationMinutes: Number (nullable)
+│       ├── note: String
+│       ├── status: "pending" | "confirmed" | "modification_requested" | "cancel_requested" | "cancelled" | "rejected"
+│       ├── createdAt: Timestamp
+│       └── updatedAt: Timestamp
+│
+└── gallery_items/
+    └── {galleryItemId}
+        ├── nailArtistProfileId: Reference → nail_artist_profiles/{profileId}
+        ├── categoryId: Reference → categories/{categoryId}
+        ├── imageUrl: String (Firebase Storage)
+        ├── title: String
+        ├── description: String
+        ├── createdAt: Timestamp
+        └── updatedAt: Timestamp
+```
+
+---

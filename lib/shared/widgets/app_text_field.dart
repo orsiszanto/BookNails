@@ -98,7 +98,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 ? IconButton(
                     icon: Icon(widget.suffixIcon),
                     onPressed: widget.onSuffixIconPressed,
-                    tooltip: 'Toggle visibility',
+                    tooltip: 'Jelszó láthatóságának módosítása',
                   )
                 : null,
             errorText: widget.errorText,

@@ -52,13 +52,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               'BookNails',
               style: AppTextStyles.displayLarge,
               textAlign: TextAlign.center,
-              semanticsLabel: 'BookNails alkalmazás',
+              semanticsLabel: 'BookNails - Oldal cím',
             ),
             const SizedBox(height: AppSpacing.s),
             const Text(
               'Regisztráció',
               style: AppTextStyles.bodyMedium,
               textAlign: TextAlign.center,
+              semanticsLabel: 'Regisztráció - Alcím',
             ),
             const SizedBox(height: AppSpacing.xl),
             // Name field

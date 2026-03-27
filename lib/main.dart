@@ -8,6 +8,7 @@ import 'screens/auth/registration_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/services/service_list_screen.dart';
 import 'screens/booking/booking_screen.dart';
+import 'screens/error/error_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
 // Routing configuration
 final GoRouter _router = GoRouter(
   initialLocation: '/login',
+  errorBuilder: (context, state) => ErrorScreen(
+    message: 'Útvonal nem található: ${state.uri.toString()}',
+  ),
   routes: [
     GoRoute(
       path: '/login',

@@ -92,6 +92,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                 const Text(
                   'Rendezés:',
                   style: AppTextStyles.bodyMedium,
+                  semanticsLabel: 'Rendezési opciók - Alszekció fejléc',
                 ),
                 DropdownButton<String>(
                   value: _sortBy,

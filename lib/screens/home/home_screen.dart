@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
                 const SnackBar(content: Text('Profil')),
               );
             },
-            tooltip: 'Profil',
+            tooltip: 'Felhasználó profil megnyitása',
           ),
         ],
       ),
@@ -57,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                     style: AppTextStyles.heading1.copyWith(
                       color: Colors.white,
                     ),
-                    semanticsLabel: 'Szalon bemutatása',
+                    semanticsLabel: 'Szépségszalon - Főcím',
                   ),
                   const SizedBox(height: AppSpacing.s),
                   const Text(
@@ -66,6 +66,7 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.white,
                       fontSize: 14,
                     ),
+                    semanticsLabel: 'Profizs körmös szolgáltatások - Leírás',
                   ),
                 ],
               ),
@@ -113,6 +114,7 @@ class HomeScreen extends StatelessWidget {
         const Text(
           'Információ',
           style: AppTextStyles.heading3,
+          semanticsLabel: 'Információ - Alszekció fejléc',
         ),
         const SizedBox(height: AppSpacing.m),
         _buildInfoCard(

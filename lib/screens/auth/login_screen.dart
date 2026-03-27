@@ -45,13 +45,14 @@ class _LoginScreenState extends State<LoginScreen> {
               'BookNails',
               style: AppTextStyles.displayLarge,
               textAlign: TextAlign.center,
-              semanticsLabel: 'BookNails alkalmazás',
+              semanticsLabel: 'BookNails - Oldal cím',
             ),
             const SizedBox(height: AppSpacing.s),
             const Text(
               'Körmös szalon foglalási rendszer',
               style: AppTextStyles.bodyMedium,
               textAlign: TextAlign.center,
+              semanticsLabel: 'Körmös szalon foglalási rendszer - Alcím',
             ),
             const SizedBox(height: AppSpacing.xl),
             // Email field
