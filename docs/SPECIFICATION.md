@@ -1,114 +1,190 @@
-# Receptgyűjtemény
+// filepath: docs/SPECIFICATION.md
+# BookNails Mobilalkalmazás
 
-**Webes alkalmazás specifikáció**
-**Programrendszerek fejlesztése gyakorlat**
-**MEAN Stack – Demonstrációs projekt**
+**Mobil alkalmazásfejlesztés gyakorlat**
+**Flutter + Firebase – Demonstrációs projekt**
 **2026. tavasz**
 
 ---
 
 ## 1. Bevezetés
 
-A Receptgyűjtemény egy MEAN stack alapú webes alkalmazás, amely lehetővé teszi receptek létrehozását, böngészését és értékelését. A projekt célja a kurzus során tanult technológiák demonstrálása egy egyszerű, de teljes értékű CRUD rendszeren keresztül.
+A **BookNails** egy Flutter és Firebase alapú mobilalkalmazás, amely egy körmös és egy szalon időpontfoglalási folyamatát támogatja. Az alkalmazás lehetővé teszi a felhasználók számára a szolgáltatások megtekintését, a körmös portfóliójának böngészését, valamint időpont foglalását egy egyszerű és intuitív mobilos felületen keresztül.
 
-A rendszer két szerepkört különböztet meg: adminisztrátor és felhasználó. Az admin előre regisztrálva van, a felhasználók pedig a regisztrációs felületen keresztül hozhatnak létre fiókot.
+A projekt célja egy modern, jól strukturált, mobil-first szemléletű alkalmazás megvalósítása, amely demonstrálja a frontend és backend integrációját, valamint a több entitásos, szerepkör-alapú működést.
 
-### 1.1. Technológiai stack
+### 1.1 Technológiai stack
 
-- **MongoDB** – NoSQL adatbázis
-- **Express.js** – Szerver oldali keretrendszer
-- **Angular** – Kliens oldali keretrendszer
-- **Node.js** – Futási környezet
+* **Flutter** – Keresztplatformos mobil keretrendszer
+* **Firebase** – Backend szolgáltatások
+* **Firebase Authentication** – Felhasználókezelés
+* **Cloud Firestore** – Perzisztens adattárolás
+* **Firebase Storage** – Képek tárolása
+* **Dart** – Alkalmazásfejlesztési nyelv
 
 ---
 
 ## 2. Szerepkörök
 
-### 2.1. Adminisztrátor
+### 2.1 Nail Artist
 
-Az admin előre regisztrált fiókkal rendelkezik (seed adat). Jogosultságai:
+A nail artist (körmös) admin jellegű szerepkörrel rendelkezik. Jogosultságai:
 
-- Kategóriák létrehozása, módosítása és törlése
-- Receptek létrehozása, módosítása és törlése
-- Összes értékelés megtekintése és moderálása (törlés)
+* Saját profil kezelése (szalon adatok, elérhetőség)
+* Szolgáltatások létrehozása, módosítása és törlése
+* Galéria képek feltöltése és kezelése
+* Elérhető napok és időintervallumok beállítása
+* Foglalások megtekintése
+* Foglalások jóváhagyása vagy elutasítása
+* Időtartam módosítási kérés indítása
+* Foglalások státuszának kezelése
 
-### 2.2. Felhasználó
+---
 
-A felhasználó a regisztrációs felületen keresztül hozhat létre fiókot. Jogosultságai:
+### 2.2 User
 
-- Receptek böngészése és részleteinek megtekintése
-- Értékelés írása receptekhez
-- Saját értékeléseinek módosítása és törlése
-- Receptek szűrése kategória szerint
+A user a vendég szerepkört tölti be. Jogosultságai:
+
+* Regisztráció és bejelentkezés
+* Körmös profil és szalon adatok megtekintése
+* Szolgáltatások böngészése és keresése
+* Galéria megtekintése
+* Szabad időpont kiválasztása
+* Foglalás létrehozása
+* Megjegyzés hozzáadása a foglaláshoz
+* Saját foglalások megtekintése
+* Lemondási kérelem indítása (48 órás szabály alapján)
+* Profiladatok szerkesztése (név, telefonszám)
 
 ---
 
 ## 3. Funkcionális követelmények
 
-1. A felhasználó regisztrálhat az alkalmazásba felhasználónév, e-mail és jelszó megadásával.
-2. A felhasználó bejelentkezhet az e-mail és jelszó párosával, sikeres bejelentkezés után JWT tokent kap.
-3. Az admin kategóriákat hozhat létre, módosíthat és törölhet.
-4. Az admin recepteket hozhat létre hozzávalókkal együtt, módosíthatja és törölheti azokat.
-5. A bejelentkezett felhasználó értékelést írhat receptekhez (1–5 pontszám + opcionális komment).
-6. A felhasználó módosíthatja és törölheti a saját értékeléseit.
-7. Bárki (bejelentkezés nélkül is) böngészheti a recepteket és szűrhet kategória szerint.
-8. A recept részletei oldalon megjeleníthetőek a hozzávalók és az értékelések.
-9. Az adatbázis demo adatokat tartalmaz (legalább 3 kategória, 5 recept, hozzávalókkal).
+1. A felhasználó regisztrálhat e-mail és jelszó megadásával.
+2. A felhasználó bejelentkezhet Firebase Authentication segítségével.
+3. A felhasználó böngészheti a szolgáltatásokat.
+4. A felhasználó kereshet szolgáltatásokat és rendezheti azokat ár szerint.
+5. A felhasználó megtekintheti a körmös galériáját.
+6. A felhasználó kiválaszthat egy szolgáltatást.
+7. A rendszer csak a szolgáltatáshoz megfelelő szabad időpontokat jeleníti meg.
+8. A felhasználó időpontot foglalhat.
+9. A foglalás állapota kezdetben „pending”.
+10. A körmös jóváhagyhatja vagy elutasíthatja a foglalást.
+11. A körmös módosítási kérést indíthat (időtartam változtatás).
+12. A felhasználó lemondási kérelmet indíthat (minimum 48 órával előtte).
+13. A felhasználó megtekintheti saját foglalásait és azok státuszát.
+14. A körmös kezelheti a szolgáltatásokat (CRUD).
+15. A körmös kezelheti a galériát (CRUD).
+16. A körmös beállíthatja az elérhető időintervallumokat.
 
 ---
 
 ## 4. Nem-funkcionális követelmények
 
-1. A jelszó tárolás bcrypt hash-sel történik.
-2. JWT alapú autentikáció, token lejárati idővel.
-3. Role-based hozzáférés-vezérlés middleware-rel megvalósítva.
-4. CORS konfiguráció a kliens-szerver kommunikációhoz.
-5. Hibakezelés: a szerver értelmes HTTP státuszkodokat és hibaüzeneteket ad vissza.
-6. Reszponzív felhasználói felület Angular Material komponensekkel.
+1. Firebase Authentication alapú biztonságos bejelentkezés.
+2. Role-based hozzáférés (user vs nail artist).
+3. Mobil-first, adaptív felhasználói felület.
+4. Egységes design rendszer (színek, tipográfia, spacing).
+5. Accessibility szempontok figyelembevétele (kontraszt, olvashatóság).
+6. Loading és error state-ek kezelése.
+7. Gyors adatlekérdezés Firestore használatával.
+8. Képek tárolása Firebase Storage-ben.
+9. Stabil működés és hibakezelés.
 
 ---
 
-## 5. Kliens oldali nézetek
+## 5. Mobil képernyők
 
-Az Angular alkalmazás az alábbi fő nézeteket (oldalakat) tartalmazza:
+### 5.1 Nyilvános képernyők
 
-### 5.1. Nyilvános nézetek
-
-- **Kezdőlap** – Receptek listája, kategória szűrővel
-- **Recept részletek** – Leírás, hozzávalók, értékelések
-- **Bejelentkezés** – E-mail és jelszó megadása
-- **Regisztráció** – Új fiók létrehozása
-
-### 5.2. Bejelentkezett felhasználói nézetek
-
-- **Értékelés írása / módosítása** – Pontszám és komment űrlap
-
-### 5.3. Admin nézetek
-
-- **Kategória kezelés** – CRUD műveletek kategóriákra
-- **Recept kezelés** – CRUD műveletek receptekre és hozzávalókra
-- **Értékelés moderálás** – Értékelések áttekintése és törlése
+* **Bejelentkezés**
+* **Regisztráció**
+* **Jelszó visszaállítás** *(opcionális)*
 
 ---
 
-## 6. Telepítés és futtatás
+### 5.2 User képernyők
 
-A rendszer minden komponense konténerizált formában lesz üzemeltetve. A rendszer futtatásához szükséges előfeltételek:
-
-- Node.js (v24)
-- MongoDB (lokális)
-- Angular CLI (v21)
+* **Home** – Szalon bemutatása
+* **Services** – Szolgáltatások listája
+* **Service Details** – Szolgáltatás részletei
+* **Booking** – Időpontfoglalás (naptár + slot választás)
+* **My Appointments** – Saját foglalások
+* **Appointment Details** – Foglalás részletei
+* **Gallery** – Körmös portfólió
+* **Profile** – Felhasználói adatok
 
 ---
 
-## 7. Mappaszerkezet
+### 5.3 Nail Artist képernyők
 
-A GitHub repository várt struktúrája:
+* **Dashboard** – Áttekintés
+* **Appointments** – Foglalások kezelése
+* **Appointment Details**
+* **Services Management** – Szolgáltatások CRUD
+* **Gallery Management** – Képek kezelése
+* **Profile Management** – Szalon adatok
+* **Availability Management** – Időintervallumok beállítása
 
-| Mappa / Fájl | Leírás |
-|---|---|
-| `/server` | Express.js szerver forráskód |
-| `/client` | Angular alkalmazás forráskód |
-| `/docs` | Dokumentáció (ez a specifikáció is) |
-| `/prompts` | AI prompt-ok és elemzés |
-| `README.md` | Telepítési útmutató |
+---
+
+## 6. Adatmodell (rövid áttekintés)
+
+Az alkalmazás fő entitásai:
+
+* **User**
+* **NailArtistProfile**
+* **Service**
+* **Category**
+* **Appointment**
+* **GalleryItem**
+
+### Kapcsolatok
+
+* User Appointment (1:N)
+* User -> NailArtistProfile (1:1)
+* NailArtistProfile -> Service (1:N)
+* NailArtistProfile -> GalleryItem (1:N)
+* NailArtistProfile -> Appointment (1:N)
+* Service -> Appointment (1:N)
+* Category -> Service (1:N)
+* Category -> GalleryItem (1:N)
+
+---
+
+## 7. Telepítés és futtatás
+
+A rendszer Firebase alapokon működik, külön backend szerver nem szükséges.
+
+Szükséges eszközök:
+
+* Flutter SDK (stable)
+* Dart SDK
+* Android Studio
+* Firebase CLI
+
+---
+
+## 8. Mappaszerkezet
+
+| Mappa / Fájl    | Leírás                       |
+| --------------- | ---------------------------- |
+| `/docs`         | Dokumentáció                 |
+| `/lib`          | Flutter alkalmazás forráskód |
+| `/lib/screens`  | Képernyők                    |
+| `/lib/widgets`  | UI komponensek               |
+| `/lib/services` | Firebase szolgáltatások      |
+| `/lib/models`   | Adatmodellek                 |
+| `/lib/cubit`    | Állapotkezelés               |
+| `/assets`       | Képek                        |
+| `README.md`     | Telepítési útmutató          |
+
+---
+
+## 9. Megvalósítási terv
+
+* **Fázis 1:** Alap funkciók (auth, services, UI)
+* **Fázis 2:** Foglalási rendszer és backend integráció
+* **Fázis 3:** Finomítás, tesztelés, UX javítások
+
+---

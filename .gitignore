@@ -3,14 +3,37 @@ node_modules/
 .pnp
 .pnp.js
 
+# Dart & Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.packages
+.pub-cache/
+.pub/
+pubspec.lock
+GeneratedPluginRegistrant.java
+
 # Build outputs
 dist/
 build/
+/build/
 .angular/
 .next/
 .nuxt/
 .svelte-kit/
 .output/
+
+# Android
+/android/.gradle/
+/android/.idea/
+/android/build/
+/android/captures/
+/android/gradlew
+/android/gradlew.bat
+/android/local.properties
+*.apk
+*.aab
 
 # Environment files
 .env
@@ -24,6 +47,7 @@ environment.prod.ts
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
+google-services.json
 
 # IDE
 .vscode/
@@ -31,6 +55,7 @@ ui-debug.log
 *.swp
 *.swo
 *~
+*.sublime-workspace
 
 # OS
 .DS_Store
@@ -44,3 +69,9 @@ coverage/
 .evaluator/
 evaluation-result.json
 evaluation-issue.md
+
+# Flutter-generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages

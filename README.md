@@ -4,7 +4,7 @@
 
 > **Hallgató neve:** _Szántó Orsolya_  
 > **Neptun kód:** _H93NV2_  
-> **Projekt téma:** _Műkörmös időpontfoglaló alkalmazás_  
+> **Projekt téma:** _BookNails Mobilalkalmazás_  
 > **Keretrendszer:** _Flutter Firebase_
 
 ---
@@ -13,7 +13,9 @@
 
 ### Előfeltételek
 
-> _[Sorold fel a szükséges eszközöket, pl. Flutter SDK, Android Studio, Xcode, Node.js stb.]_
+- Flutter SDK (stable)
+- Dart SDK
+- Android Studio (Android SDK + emulator)
 
 ### Telepítés és futtatás
 
@@ -21,20 +23,22 @@
 git clone <repo-url>
 cd <projekt-mappa>
 
-# Flutter esetén:
+# Függőségek telepítése
 flutter pub get
+
+# Futtatás Androidon
 flutter run
 
-# React Native esetén:
-npm install
-npx react-native run-android   # vagy: npx react-native run-ios
+# Futtatás konkrét eszközön
+flutter devices
+flutter run -d <device-id>
 ```
 
 ---
 
 ## 📱 Letöltés / Telepítés
 
-> _[Írd ide a letölthető APK/IPA fájl elérhetőségét, vagy a tesztelési csatorna linkjét, pl. Firebase App Distribution, TestFlight, GitHub Releases]_
+> _[Írd ide a letölthető APK fájl elérhetőségét, vagy a tesztelési csatorna linkjét, pl. Firebase App Distribution, GitHub Releases]_
 
 ---
 
@@ -47,15 +51,14 @@ npx react-native run-android   # vagy: npx react-native run-ios
 │   ├── COMPONENTS.md        # Komponens-terv (widget-fa / navigációs gráf)
 │   └── AI_PROMPT_LOG.md     # AI prompt napló
 ├── lib/                     # Forráskód (Flutter)
-│   └── ...
+│   └── main.dart
 ├── android/                 # Android platform-specifikus fájlok
-├── ios/                     # iOS platform-specifikus fájlok
 ├── test/                    # Unit tesztek
 ├── integration_test/        # Integrációs / E2E tesztek
 └── .github/workflows/       # Automatikus értékelés (ne módosítsd!)
 ```
 
-> _Megjegyzés: A fenti struktúra Flutter projektre példa. React Native, SwiftUI vagy Kotlin Compose esetén a mappastruktúra eltérhet — igazítsd a saját projektedhez._
+> _Megjegyzés: A fenti struktúra Flutter projektre példa. A saját projektedhez igazíthatod (pl. további mappák: assets/, lib/screens/, lib/widgets/)._ 
 
 ---
 
