@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../bloc/cubit/auth_cubit.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
@@ -17,6 +19,14 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('BookNails'),
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            context.read<AuthCubit>().signOut();
+            context.goNamed('login');
+          },
+          tooltip: 'Kijelentkezés',
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -86,19 +96,7 @@ class HomeScreen extends StatelessWidget {
                     icon: const Icon(Icons.spa),
                     label: const Text('Szolgáltatások'),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.m),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Galéria megnyitása')),
-                      );
-                    },
-                    icon: const Icon(Icons.photo),
-                    label: const Text('Galéria'),
-                  ),
-                ),
+                )
               ],
             ),
           ],

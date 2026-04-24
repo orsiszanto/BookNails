@@ -48,6 +48,8 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 google-services.json
+firebase-key.json
+*-key.json
 
 # IDE
 .vscode/

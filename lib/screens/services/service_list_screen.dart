@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../bloc/cubit/service_cubit.dart';
+import '../../models/service.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import '../../shared/widgets/app_text_field.dart';
 import '../../shared/widgets/service_grid_card.dart';
@@ -17,41 +20,16 @@ class ServiceListScreen extends StatefulWidget {
 }
 
 class _ServiceListScreenState extends State<ServiceListScreen> {
-  final _searchController = TextEditingController();
-  final bool _isLoading = false;
   String _sortBy = 'name'; // name or price
+  final TextEditingController _searchController = TextEditingController();
 
-  // Mock data
-  final List<Map<String, dynamic>> _mockServices = [
-    {
-      'id': '1',
-      'title': 'Géllakk',
-      'description': 'Professzionális géllakk manikűr',
-      'price': '5 000 Ft',
-      'duration': '90 perc',
-    },
-    {
-      'id': '2',
-      'title': 'Körmöshöz',
-      'description': 'Természetes körmök ápolása',
-      'price': '3 500 Ft',
-      'duration': '60 perc',
-    },
-    {
-      'id': '3',
-      'title': 'Körömrák eltávolítás',
-      'description': 'Körömrák szakszerű eltávolítása',
-      'price': '2 000 Ft',
-      'duration': '30 perc',
-    },
-    {
-      'id': '4',
-      'title': 'Pedicure',
-      'description': 'Komplett lábápolás',
-      'price': '4 500 Ft',
-      'duration': '75 perc',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // Fetch all active services from Firebase when screen loads
+    // Simple query without complex filtering/sorting to avoid index requirements
+    context.read<ServiceCubit>().fetchServicesByFilters();
+  }
 
   @override
   void dispose() {
@@ -59,8 +37,11 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     super.dispose();
   }
 
-  void _handleServiceTap(String serviceId) {
-    context.pushNamed('booking');
+  void _handleServiceTap(Service service) {
+    context.pushNamed(
+      'booking',
+      pathParameters: {'serviceId': service.id},
+    );
   }
 
   @override
@@ -81,6 +62,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
               hint: 'Keres szolgáltatást...',
               controller: _searchController,
               prefixIcon: Icons.search,
+              onChanged: (_) => setState(() {}),
             ),
           ),
           // Sort dropdown
@@ -114,24 +96,54 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.m),
-          // Services list
-          Expanded(
-            child: LoadingIndicator(
-              isLoading: _isLoading,
-              child: _buildServicesList(),
-            ),
-          ),
+           // Services list
+           Expanded(
+             child: BlocBuilder<ServiceCubit, ServiceState>(
+               builder: (context, state) {
+                 if (state is ServiceLoading) {
+                   return const LoadingIndicator(
+                     isLoading: true,
+                     child: SizedBox.shrink(),
+                   );
+                 } else if (state is ServiceLoaded) {
+                   return _buildServicesList(state.services);
+                 } else if (state is ServiceError) {
+                   return Center(
+                     child: EmptyState(
+                       icon: Icons.error_outline,
+                       title: 'Hiba',
+                       description: state.message,
+                       action: ElevatedButton(
+                         onPressed: () =>
+                             context.read<ServiceCubit>().fetchServicesByFilters(),
+                         child: const Text('Újra próbálkozás'),
+                       ),
+                     ),
+                   );
+                 }
+                 return const SizedBox.shrink();
+               },
+             ),
+           ),
         ],
       ),
     );
   }
 
-  Widget _buildServicesList() {
-    final filteredServices = _mockServices
-        .where((service) => service['title']
+  Widget _buildServicesList(List<Service> services) {
+    // Filter services based on search
+    final filteredServices = services
+        .where((service) => service.name
             .toLowerCase()
             .contains(_searchController.text.toLowerCase()))
         .toList();
+
+    // Sort services
+    if (_sortBy == 'price') {
+      filteredServices.sort((a, b) => a.price.compareTo(b.price));
+    } else {
+      filteredServices.sort((a, b) => a.name.compareTo(b.name));
+    }
 
     if (filteredServices.isEmpty) {
       return EmptyState(
@@ -139,7 +151,10 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
         title: 'Nincs találat',
         description: 'Sajnos nincs olyan szolgáltatás, amit keresne.',
         action: ElevatedButton(
-          onPressed: () => _searchController.clear(),
+          onPressed: () {
+            _searchController.clear();
+            setState(() {});
+          },
           child: const Text('Keresés törlése'),
         ),
       );
@@ -157,11 +172,11 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
       itemBuilder: (context, index) {
         final service = filteredServices[index];
         return ServiceGridCard(
-          title: service['title'],
-          description: service['description'],
-          price: service['price'],
-          duration: service['duration'],
-          onTap: () => _handleServiceTap(service['id']),
+          title: service.name,
+          description: service.description,
+          price: '${service.price.toStringAsFixed(0)} Ft',
+          duration: '${service.durationMinutes} perc',
+          onTap: () => _handleServiceTap(service),
         );
       },
     );

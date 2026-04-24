@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -9,6 +10,18 @@ import 'screens/home/home_screen.dart';
 import 'screens/services/service_list_screen.dart';
 import 'screens/booking/booking_screen.dart';
 import 'screens/error/error_screen.dart';
+import 'bloc/cubit/auth_cubit.dart';
+import 'bloc/cubit/category_cubit.dart';
+import 'bloc/cubit/service_cubit.dart';
+import 'bloc/cubit/appointment_cubit.dart';
+import 'bloc/cubit/user_cubit.dart';
+import 'bloc/cubit/nail_artist_profile_cubit.dart';
+import 'services/auth_service.dart';
+import 'services/category_service.dart';
+import 'services/service_service.dart';
+import 'services/appointment_service.dart';
+import 'services/user_service.dart';
+import 'services/nail_artist_profile_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,13 +39,35 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'BookNails',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
-      routerConfig: _router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(AuthService()),
+        ),
+        BlocProvider(
+          create: (context) => CategoryCubit(CategoryService()),
+        ),
+        BlocProvider(
+          create: (context) => ServiceCubit(ServiceService()),
+        ),
+        BlocProvider(
+          create: (context) => AppointmentCubit(AppointmentService()),
+        ),
+        BlocProvider(
+          create: (context) => UserCubit(UserService()),
+        ),
+        BlocProvider(
+          create: (context) => NailArtistProfileCubit(NailArtistProfileService()),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'BookNails',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.light,
+        routerConfig: _router,
+      ),
     );
   }
 }
@@ -65,9 +100,11 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => const ServiceListScreen(),
     ),
     GoRoute(
-      path: '/booking',
+      path: '/booking/:serviceId',
       name: 'booking',
-      builder: (context, state) => const BookingScreen(),
+      builder: (context, state) => BookingScreen(
+        serviceId: state.pathParameters['serviceId'],
+      ),
     ),
   ],
 );

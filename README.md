@@ -58,7 +58,7 @@ flutter run -d <device-id>
 └── .github/workflows/       # Automatikus értékelés (ne módosítsd!)
 ```
 
-> _Megjegyzés: A fenti struktúra Flutter projektre példa. A saját projektedhez igazíthatod (pl. további mappák: assets/, lib/screens/, lib/widgets/)._ 
+> _Megjegyzés: A fenti struktúra Flutter projektre példa. A saját projektedhez igazíthatod (pl. további mappák: assets/, lib/screens/, lib/widgets/)._
 
 ---
 
@@ -78,7 +78,7 @@ flutter run -d <device-id>
 4. Kattints a **"Run workflow"** → válaszd ki a mérföldkövet → **"Run workflow"**
 5. Az eredmény egy **GitHub Issue**-ban jelenik meg
 
-> ⚠️ Mérföldkőnként **maximum 2 alkalommal** futtathatod az értékelést. Használd bölcsen!  
+> ⚠️ Mérföldkőnként **maximum 2 alkalommal** futtathatod az értékelést. Használd bölcsen!
 > ⚠️ A határidőkön automatikus értékelés is fut.
 
 ---
