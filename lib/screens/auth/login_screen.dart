@@ -82,8 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _passwordController.clear();
 
               if (userCubit.state is UserDetailLoaded &&
-                  (((userCubit.state as UserDetailLoaded).user.role == 'admin') ||
-                      ((userCubit.state as UserDetailLoaded).user.role == 'nail_artist'))) {
+                  (userCubit.state as UserDetailLoaded).user.role == 'nail_artist') {
                 context.goNamed('admin-dashboard');
               } else {
                 context.goNamed('home');

@@ -98,7 +98,7 @@ class AdminDashboardScreen extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: const [
                 Icon(Icons.dashboard, color: Colors.white, size: 40),
                 SizedBox(height: AppSpacing.m),
                 Text(
@@ -256,12 +256,29 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     }
   }
 
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'pending':
+        return AppColors.warning;
+      case 'confirmed':
+        return AppColors.success;
+      case 'modification_requested':
+      case 'cancel_requested':
+        return AppColors.info;
+      case 'cancelled':
+        return AppColors.textSecondary;
+      case 'rejected':
+        return AppColors.error;
+      default:
+        return AppColors.textSecondary;
+    }
+  }
+
   Future<void> _editProfile(NailArtistProfile profile) async {
     final salonController = TextEditingController(text: profile.salonName);
     final addressController = TextEditingController(text: profile.address);
     final phoneController = TextEditingController(text: profile.phoneNumber);
     final imageController = TextEditingController(text: profile.profileImageUrl ?? '');
-    final profileCubit = context.read<NailArtistProfileCubit>();
 
     final saved = await showDialog<bool>(
       context: context,
@@ -286,7 +303,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
-                await profileCubit.updateNailArtistProfile(
+                await context.read<NailArtistProfileCubit>().updateNailArtistProfile(
                       profileId: profile.id,
                       salonName: salonController.text.trim(),
                       address: addressController.text.trim(),
@@ -316,7 +333,6 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
   }
 
   Future<void> _deleteProfile(NailArtistProfile profile) async {
-    final profileCubit = context.read<NailArtistProfileCubit>();
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -339,7 +355,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     );
 
     if (confirmed == true) {
-      await profileCubit.deleteNailArtistProfile(profile.id);
+      await context.read<NailArtistProfileCubit>().deleteNailArtistProfile(profile.id);
       await _handleRefresh();
     }
   }
@@ -350,7 +366,6 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     final priceController = TextEditingController(text: service.price.toStringAsFixed(0));
     final durationController = TextEditingController(text: service.durationMinutes.toString());
     bool isActive = service.isActive;
-    final serviceCubit = context.read<ServiceCubit>();
 
     final saved = await showDialog<bool>(
       context: context,
@@ -383,7 +398,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    await serviceCubit.updateService(
+                    await context.read<ServiceCubit>().updateService(
                           serviceId: service.id,
                           name: nameController.text.trim(),
                           description: descriptionController.text.trim(),
@@ -416,7 +431,6 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
   }
 
   Future<void> _deleteService(Service service) async {
-    final serviceCubit = context.read<ServiceCubit>();
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -439,7 +453,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     );
 
     if (confirmed == true) {
-      await serviceCubit.deleteService(service.id);
+      await context.read<ServiceCubit>().deleteService(service.id);
       await _handleRefresh();
     }
   }
@@ -450,7 +464,6 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     );
     final noteController = TextEditingController(text: appointment.note ?? '');
     String status = appointment.status;
-    final appointmentCubit = context.read<AppointmentCubit>();
 
     final saved = await showDialog<bool>(
       context: context,
@@ -464,7 +477,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      initialValue: status,
+                      value: status,
                       items: const [
                         DropdownMenuItem(value: 'pending', child: Text('Függőben')),
                         DropdownMenuItem(value: 'confirmed', child: Text('Jóváhagyva')),
@@ -499,7 +512,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    await appointmentCubit.updateAppointment(
+                    await context.read<AppointmentCubit>().updateAppointment(
                           appointmentId: appointment.id,
                           estimatedDurationMinutes: int.tryParse(estimatedDurationController.text.trim()),
                           note: noteController.text.trim().isEmpty ? null : noteController.text.trim(),
@@ -528,7 +541,6 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
   }
 
   Future<void> _deleteAppointment(Appointment appointment) async {
-    final appointmentCubit = context.read<AppointmentCubit>();
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -551,7 +563,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     );
 
     if (confirmed == true) {
-      await appointmentCubit.deleteAppointment(appointment.id);
+      await context.read<AppointmentCubit>().deleteAppointment(appointment.id);
       await _handleRefresh();
     }
   }
