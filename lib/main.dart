@@ -7,6 +7,7 @@ import 'theme/app_theme.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/registration_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'screens/profile/profile_screen.dart';
 import 'screens/services/service_list_screen.dart';
 import 'screens/booking/booking_screen.dart';
 import 'screens/error/error_screen.dart';
@@ -93,6 +94,11 @@ final GoRouter _router = GoRouter(
       path: '/home',
       name: 'home',
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/profile',
+      name: 'profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
     GoRoute(
       path: '/services',

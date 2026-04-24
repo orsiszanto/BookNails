@@ -6,6 +6,19 @@ class AppointmentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String _collection = 'appointments';
 
+  List<Appointment> _sortAppointmentsByDateDesc(List<Appointment> appointments) {
+    appointments.sort((a, b) {
+      final dateCompare = b.appointmentDate.compareTo(a.appointmentDate);
+      if (dateCompare != 0) return dateCompare;
+
+      final createdAtCompare = b.createdAt.compareTo(a.createdAt);
+      if (createdAtCompare != 0) return createdAtCompare;
+
+      return b.id.compareTo(a.id);
+    });
+    return appointments;
+  }
+
   /// Create a new appointment
   Future<String> createAppointment({
     required String userId,
@@ -57,11 +70,12 @@ class AppointmentService {
     try {
       final querySnapshot = await _firestore
           .collection(_collection)
-          .orderBy('appointmentDate', descending: true)
           .get();
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
+            .toList(),
+      );
     } catch (e) {
       print('Error fetching all appointments: $e');
       rethrow;
@@ -74,11 +88,12 @@ class AppointmentService {
       final querySnapshot = await _firestore
           .collection(_collection)
           .where('userId', isEqualTo: userId)
-          .orderBy('appointmentDate', descending: true)
           .get();
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
+            .toList(),
+      );
     } catch (e) {
       print('Error fetching appointments by user: $e');
       rethrow;
@@ -92,11 +107,12 @@ class AppointmentService {
       final querySnapshot = await _firestore
           .collection(_collection)
           .where('nailArtistProfileId', isEqualTo: nailArtistProfileId)
-          .orderBy('appointmentDate', descending: true)
           .get();
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
+            .toList(),
+      );
     } catch (e) {
       print('Error fetching appointments by nail artist: $e');
       rethrow;
@@ -109,11 +125,12 @@ class AppointmentService {
       final querySnapshot = await _firestore
           .collection(_collection)
           .where('status', isEqualTo: status)
-          .orderBy('appointmentDate', descending: true)
           .get();
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data(), doc.id))
+            .toList(),
+      );
     } catch (e) {
       print('Error fetching appointments by status: $e');
       rethrow;
@@ -137,10 +154,12 @@ class AppointmentService {
         query = query.where('status', isEqualTo: status);
       }
 
-      final querySnapshot = await query.orderBy('appointmentDate', descending: true).get();
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data() as Map<String,dynamic>, doc.id))
-          .toList();
+      final querySnapshot = await query.get();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data() as Map<String,dynamic>, doc.id))
+            .toList(),
+      );
     } catch (e) {
       print('Error fetching appointments by filters: $e');
       rethrow;
@@ -196,12 +215,13 @@ class AppointmentService {
   Stream<List<Appointment>> getAppointmentsStream() {
     return _firestore
         .collection(_collection)
-        .orderBy('appointmentDate', descending: true)
         .snapshots()
         .map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
+            .toList(),
+      );
     }).handleError((error) {
       print('Error fetching appointments stream: $error');
     });
@@ -212,12 +232,13 @@ class AppointmentService {
     return _firestore
         .collection(_collection)
         .where('userId', isEqualTo: userId)
-        .orderBy('appointmentDate', descending: true)
         .snapshots()
         .map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
+            .toList(),
+      );
     }).handleError((error) {
       print('Error fetching appointments by user stream: $error');
     });
@@ -229,12 +250,13 @@ class AppointmentService {
     return _firestore
         .collection(_collection)
         .where('nailArtistProfileId', isEqualTo: nailArtistProfileId)
-        .orderBy('appointmentDate', descending: true)
         .snapshots()
         .map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
+            .toList(),
+      );
     }).handleError((error) {
       print('Error fetching appointments by nail artist stream: $error');
     });
@@ -245,12 +267,13 @@ class AppointmentService {
     return _firestore
         .collection(_collection)
         .where('status', isEqualTo: status)
-        .orderBy('appointmentDate', descending: true)
         .snapshots()
         .map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data() ?? {}, doc.id))
+            .toList(),
+      );
     }).handleError((error) {
       print('Error fetching appointments by status stream: $error');
     });
@@ -273,12 +296,13 @@ class AppointmentService {
     }
 
     return query
-        .orderBy('appointmentDate', descending: true)
         .snapshots()
         .map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) => Appointment.fromFirestore(doc.data() as Map<String,dynamic>, doc.id))
-          .toList();
+      return _sortAppointmentsByDateDesc(
+        querySnapshot.docs
+            .map((doc) => Appointment.fromFirestore(doc.data() as Map<String,dynamic>, doc.id))
+            .toList(),
+      );
     }).handleError((error) {
       print('Error fetching appointments by filters stream: $error');
     });

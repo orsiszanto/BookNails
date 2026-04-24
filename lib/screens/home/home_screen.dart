@@ -31,9 +31,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Profil')),
-              );
+              context.pushNamed('profile');
             },
             tooltip: 'Felhasználó profil megnyitása',
           ),
