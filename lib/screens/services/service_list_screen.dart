@@ -22,19 +22,44 @@ class ServiceListScreen extends StatefulWidget {
 class _ServiceListScreenState extends State<ServiceListScreen> {
   String _sortBy = 'name'; // name or price
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  static const int _pageSize = 8;
 
   @override
   void initState() {
     super.initState();
-    // Fetch all active services from Firebase when screen loads
-    // Simple query without complex filtering/sorting to avoid index requirements
-    context.read<ServiceCubit>().fetchServicesByFilters();
+    _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<ServiceCubit>().loadInitialServicesPage(pageSize: _pageSize);
+    });
   }
 
   @override
   void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final state = context.read<ServiceCubit>().state;
+    if (state is! ServicePagedLoaded ||
+        !state.hasMore ||
+        state.isLoadingMore ||
+        state.loadMoreError != null) {
+      return;
+    }
+
+    const threshold = 200.0;
+    final position = _scrollController.position;
+    if (position.maxScrollExtent - position.pixels <= threshold) {
+      context.read<ServiceCubit>().loadMoreServicesPage(pageSize: _pageSize);
+    }
   }
 
   void _handleServiceTap(Service service) {
@@ -105,8 +130,19 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                      isLoading: true,
                      child: SizedBox.shrink(),
                    );
-                 } else if (state is ServiceLoaded) {
-                   return _buildServicesList(state.services);
+                  } else if (state is ServicePagedLoaded) {
+                    return _buildServicesList(
+                      state.services,
+                      hasMore: state.hasMore,
+                      isLoadingMore: state.isLoadingMore,
+                      loadMoreError: state.loadMoreError,
+                    );
+                  } else if (state is ServiceLoaded) {
+                    return _buildServicesList(
+                      state.services,
+                      hasMore: false,
+                      isLoadingMore: false,
+                    );
                  } else if (state is ServiceError) {
                    return Center(
                      child: EmptyState(
@@ -114,8 +150,9 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                        title: 'Hiba',
                        description: state.message,
                        action: ElevatedButton(
-                         onPressed: () =>
-                             context.read<ServiceCubit>().fetchServicesByFilters(),
+                          onPressed: () => context
+                              .read<ServiceCubit>()
+                              .loadInitialServicesPage(pageSize: _pageSize),
                          child: const Text('Újra próbálkozás'),
                        ),
                      ),
@@ -130,7 +167,12 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     );
   }
 
-  Widget _buildServicesList(List<Service> services) {
+  Widget _buildServicesList(
+    List<Service> services, {
+    required bool hasMore,
+    required bool isLoadingMore,
+    String? loadMoreError,
+  }) {
     // Filter services based on search
     final filteredServices = services
         .where((service) => service.name
@@ -161,6 +203,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     }
 
     return GridView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.all(AppSpacing.m),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -168,8 +211,15 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
         mainAxisSpacing: AppSpacing.m,
         childAspectRatio: 0.55,
       ),
-      itemCount: filteredServices.length,
+      itemCount: filteredServices.length + (hasMore || isLoadingMore || loadMoreError != null ? 1 : 0),
       itemBuilder: (context, index) {
+        if (index >= filteredServices.length) {
+          return _buildPaginationFooter(
+            isLoadingMore: isLoadingMore,
+            loadMoreError: loadMoreError,
+          );
+        }
+
         final service = filteredServices[index];
         return ServiceGridCard(
           title: service.name,
@@ -180,5 +230,46 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
         );
       },
     );
+  }
+
+  Widget _buildPaginationFooter({
+    required bool isLoadingMore,
+    String? loadMoreError,
+  }) {
+    if (isLoadingMore) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(AppSpacing.m),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (loadMoreError != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.m),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Nem sikerült a további elemek betöltése.',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.s),
+              TextButton(
+                onPressed: () => context.read<ServiceCubit>().loadMoreServicesPage(pageSize: _pageSize),
+                child: const Text('Újrapróbálás'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

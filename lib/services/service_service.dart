@@ -1,6 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/service.dart';
 
+class ServicePage {
+  final List<Service> services;
+  final DocumentSnapshot? lastDocument;
+  final bool hasMore;
+
+  const ServicePage({
+    required this.services,
+    required this.lastDocument,
+    required this.hasMore,
+  });
+}
+
 /// Service for managing services in Firestore
 class ServiceService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -60,6 +72,37 @@ class ServiceService {
           .toList();
     } catch (e) {
       print('Error fetching all services: $e');
+      rethrow;
+    }
+  }
+
+  /// Get a page of services for infinite scroll / pagination
+  Future<ServicePage> getServicesPage({
+    int limit = 8,
+    DocumentSnapshot? startAfterDocument,
+  }) async {
+    try {
+      Query query = _firestore
+          .collection(_collection)
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
+
+      if (startAfterDocument != null) {
+        query = query.startAfterDocument(startAfterDocument);
+      }
+
+      final querySnapshot = await query.get();
+      final services = querySnapshot.docs
+          .map((doc) => Service.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
+          .toList();
+
+      return ServicePage(
+        services: services,
+        lastDocument: querySnapshot.docs.isNotEmpty ? querySnapshot.docs.last : startAfterDocument,
+        hasMore: querySnapshot.docs.length == limit,
+      );
+    } catch (e) {
+      print('Error fetching paged services: $e');
       rethrow;
     }
   }

@@ -28,6 +28,38 @@ class ServiceLoaded extends ServiceState {
   List<Object?> get props => [services];
 }
 
+/// State for paginated service lists with infinite scroll support
+class ServicePagedLoaded extends ServiceState {
+  final List<Service> services;
+  final bool hasMore;
+  final bool isLoadingMore;
+  final String? loadMoreError;
+
+  const ServicePagedLoaded(
+    this.services, {
+    required this.hasMore,
+    this.isLoadingMore = false,
+    this.loadMoreError,
+  });
+
+  ServicePagedLoaded copyWith({
+    List<Service>? services,
+    bool? hasMore,
+    bool? isLoadingMore,
+    String? loadMoreError,
+  }) {
+    return ServicePagedLoaded(
+      services ?? this.services,
+      hasMore: hasMore ?? this.hasMore,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      loadMoreError: loadMoreError,
+    );
+  }
+
+  @override
+  List<Object?> get props => [services, hasMore, isLoadingMore, loadMoreError];
+}
+
 /// State when a single service is loaded
 class ServiceDetailLoaded extends ServiceState {
   final Service service;

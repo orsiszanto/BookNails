@@ -19,7 +19,6 @@ A projekt célja egy modern, jól strukturált, mobil-first szemléletű alkalma
 * **Firebase** – Backend szolgáltatások
 * **Firebase Authentication** – Felhasználókezelés
 * **Cloud Firestore** – Perzisztens adattárolás
-* **Firebase Storage** – Képek tárolása
 * **Dart** – Alkalmazásfejlesztési nyelv
 
 ---
@@ -32,7 +31,6 @@ A nail artist (körmös) admin jellegű szerepkörrel rendelkezik. Jogosultsága
 
 * Saját profil kezelése (szalon adatok, elérhetőség)
 * Szolgáltatások létrehozása, módosítása és törlése
-* Galéria képek feltöltése és kezelése
 * Elérhető napok és időintervallumok beállítása
 * Foglalások megtekintése
 * Foglalások jóváhagyása vagy elutasítása
@@ -48,7 +46,6 @@ A user a vendég szerepkört tölti be. Jogosultságai:
 * Regisztráció és bejelentkezés
 * Körmös profil és szalon adatok megtekintése
 * Szolgáltatások böngészése és keresése
-* Galéria megtekintése
 * Szabad időpont kiválasztása
 * Foglalás létrehozása
 * Megjegyzés hozzáadása a foglaláshoz
@@ -64,18 +61,16 @@ A user a vendég szerepkört tölti be. Jogosultságai:
 2. A felhasználó bejelentkezhet Firebase Authentication segítségével.
 3. A felhasználó böngészheti a szolgáltatásokat.
 4. A felhasználó kereshet szolgáltatásokat és rendezheti azokat ár szerint.
-5. A felhasználó megtekintheti a körmös galériáját.
-6. A felhasználó kiválaszthat egy szolgáltatást.
-7. A rendszer csak a szolgáltatáshoz megfelelő szabad időpontokat jeleníti meg.
-8. A felhasználó időpontot foglalhat.
-9. A foglalás állapota kezdetben „pending”.
-10. A körmös jóváhagyhatja vagy elutasíthatja a foglalást.
-11. A körmös módosítási kérést indíthat (időtartam változtatás).
-12. A felhasználó lemondási kérelmet indíthat (minimum 48 órával előtte).
-13. A felhasználó megtekintheti saját foglalásait és azok státuszát.
-14. A körmös kezelheti a szolgáltatásokat (CRUD).
-15. A körmös kezelheti a galériát (CRUD).
-16. A körmös beállíthatja az elérhető időintervallumokat.
+5. A felhasználó kiválaszthat egy szolgáltatást.
+6. A rendszer csak a szolgáltatáshoz megfelelő szabad időpontokat jeleníti meg.
+7. A felhasználó időpontot foglalhat.
+8. A foglalás állapota kezdetben „pending”.
+9. A körmös jóváhagyhatja vagy elutasíthatja a foglalást.
+10. A körmös módosítási kérést indíthat (időtartam változtatás).
+11. A felhasználó lemondási kérelmet indíthat (minimum 48 órával előtte).
+12. A felhasználó megtekintheti saját foglalásait és azok státuszát.
+13. A körmös kezelheti a szolgáltatásokat (CRUD).
+14. A körmös beállíthatja az elérhető időintervallumokat.
 
 ---
 
@@ -88,7 +83,6 @@ A user a vendég szerepkört tölti be. Jogosultságai:
 5. Accessibility szempontok figyelembevétele (kontraszt, olvashatóság).
 6. Loading és error state-ek kezelése.
 7. Gyors adatlekérdezés Firestore használatával.
-8. Képek tárolása Firebase Storage-ben.
 9. Stabil működés és hibakezelés.
 
 ---
@@ -111,7 +105,6 @@ A user a vendég szerepkört tölti be. Jogosultságai:
 * **Booking** – Időpontfoglalás (naptár + slot választás)
 * **My Appointments** – Saját foglalások
 * **Appointment Details** – Foglalás részletei
-* **Gallery** – Körmös portfólió
 * **Profile** – Felhasználói adatok
 
 ---
@@ -122,7 +115,6 @@ A user a vendég szerepkört tölti be. Jogosultságai:
 * **Appointments** – Foglalások kezelése
 * **Appointment Details**
 * **Services Management** – Szolgáltatások CRUD
-* **Gallery Management** – Képek kezelése
 * **Profile Management** – Szalon adatok
 * **Availability Management** – Időintervallumok beállítása
 
@@ -137,18 +129,15 @@ Az alkalmazás fő entitásai:
 * **Service**
 * **Category**
 * **Appointment**
-* **GalleryItem**
 
 ### Kapcsolatok
 
 * User Appointment (1:N)
 * User -> NailArtistProfile (1:1)
 * NailArtistProfile -> Service (1:N)
-* NailArtistProfile -> GalleryItem (1:N)
 * NailArtistProfile -> Appointment (1:N)
 * Service -> Appointment (1:N)
 * Category -> Service (1:N)
-* Category -> GalleryItem (1:N)
 
 ---
 

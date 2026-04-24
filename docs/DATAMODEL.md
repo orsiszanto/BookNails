@@ -69,7 +69,7 @@ h-s azonosító: h378048
 | --------- | ------------------------------------------- |
 | id        | egyedi azonosító                            |
 | name      | kategória neve                              |
-| type      | kategória típusa (`service` vagy `gallery`) |
+| type      | kategória típusa (`service`)                |
 | createdAt | létrehozás ideje                            |
 
 ---
@@ -93,30 +93,14 @@ h-s azonosító: h378048
 
 ---
 
-### GalleryItem
-
-| Mező                | Leírás            |
-| ------------------- | ----------------- |
-| id                  | egyedi azonosító  |
-| nailArtistProfileId | kapcsolódó profil |
-| categoryId          | kategória         |
-| imageUrl            | kép               |
-| title               | cím               |
-| description         | leírás            |
-| createdAt           | létrehozás ideje  |
-
----
-
 ## Kapcsolatok
 
 * **User 1 — N Appointment**
 * **User 1 — 1 NailArtistProfile**
 * **NailArtistProfile 1 — N Service**
-* **NailArtistProfile 1 — N GalleryItem**
 * **NailArtistProfile 1 — N Appointment**
 * **Service 1 — N Appointment**
 * **Category 1 — N Service**
-* **Category 1 — N GalleryItem**
 
 ---
 
@@ -124,7 +108,6 @@ h-s azonosító: h378048
 
 * Egy foglalás mindig **egy szolgáltatáshoz tartozik**.
 * A foglalások időtartama a szolgáltatás alapján kerül meghatározásra, de módosítható a körmös által.
-* A `Category` entitás közösen használható szolgáltatások és galéria elemek csoportosítására.
 * A `NailArtistProfile` külön entitásként kezeli a szalonhoz kapcsolódó adatokat.
 * Az időpontok ütközésének kezelése backend (Firebase) logikával történik.
 * A foglalási státuszok workflow alapú működést biztosítanak.
@@ -171,7 +154,7 @@ firestore/
 ├── categories/
 │   └── {categoryId}
 │       ├── name: String
-│       ├── type: "service" | "gallery"
+│       ├── type: "service"
 │       ├── createdAt: Timestamp
 │       └── updatedAt: Timestamp
 │
@@ -189,15 +172,6 @@ firestore/
 │       ├── createdAt: Timestamp
 │       └── updatedAt: Timestamp
 │
-└── gallery_items/
-    └── {galleryItemId}
-        ├── nailArtistProfileId: Reference → nail_artist_profiles/{profileId}
-        ├── categoryId: Reference → categories/{categoryId}
-        ├── imageUrl: String (Firebase Storage)
-        ├── title: String
-        ├── description: String
-        ├── createdAt: Timestamp
-        └── updatedAt: Timestamp
 ```
 
 ---

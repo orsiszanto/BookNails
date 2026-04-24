@@ -96,7 +96,7 @@ Login ← → Registration
 #### 1. **DATAMODEL.md Firestore Kollekciószerkezet** (+0.5 pont)
 - ✅ Hozzáadott Firestore collection struktura diagram
 - ✅ Entity relationships vizualizálva (Reference-ek)
-- ✅ Collections: users, nail_artist_profiles, services, categories, appointments, gallery_items
+- ✅ Collections: users, nail_artist_profiles, services, categories, appointments
 - ✅ Minden field tipusa és kapcsolata dokumentálva
 
 #### 2. **Akadálymentesség (Accessibility) fejlesztések** (+1.5 pont)

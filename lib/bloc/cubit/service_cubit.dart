@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../models/service.dart';
@@ -8,6 +9,10 @@ part '../state/service_state.dart';
 /// Cubit for managing service business logic
 class ServiceCubit extends Cubit<ServiceState> {
   final ServiceService _serviceService;
+  DocumentSnapshot? _servicesCursor;
+  final List<Service> _pagedServices = [];
+  bool _hasMoreServices = true;
+  bool _isLoadingMoreServices = false;
 
   ServiceCubit(this._serviceService) : super(const ServiceInitial());
 
@@ -22,6 +27,77 @@ class ServiceCubit extends Cubit<ServiceState> {
         'Error fetching services: $e',
         stackTrace: stackTrace,
       ));
+    }
+  }
+
+  /// Fetch the first page of services for infinite scroll screens
+  Future<void> loadInitialServicesPage({int pageSize = 8}) async {
+    try {
+      emit(const ServiceLoading());
+      _servicesCursor = null;
+      _pagedServices.clear();
+      _hasMoreServices = true;
+      _isLoadingMoreServices = false;
+
+      final page = await _serviceService.getServicesPage(limit: pageSize);
+      _pagedServices.addAll(page.services);
+      _servicesCursor = page.lastDocument;
+      _hasMoreServices = page.hasMore;
+
+      emit(
+        ServicePagedLoaded(
+          List.unmodifiable(_pagedServices),
+          hasMore: _hasMoreServices,
+        ),
+      );
+    } catch (e, stackTrace) {
+      emit(ServiceError(
+        'Error fetching services: $e',
+        stackTrace: stackTrace,
+      ));
+    }
+  }
+
+  /// Fetch the next page of services for infinite scroll screens
+  Future<void> loadMoreServicesPage({int pageSize = 8}) async {
+    final currentState = state;
+    if (currentState is! ServicePagedLoaded ||
+        !_hasMoreServices ||
+        _isLoadingMoreServices) {
+      return;
+    }
+
+    _isLoadingMoreServices = true;
+    emit(currentState.copyWith(isLoadingMore: true, loadMoreError: null));
+
+    try {
+      final page = await _serviceService.getServicesPage(
+        limit: pageSize,
+        startAfterDocument: _servicesCursor,
+      );
+
+      if (page.services.isNotEmpty) {
+        _pagedServices.addAll(page.services);
+      }
+
+      _servicesCursor = page.lastDocument;
+      _hasMoreServices = page.hasMore;
+
+      emit(
+        ServicePagedLoaded(
+          List.unmodifiable(_pagedServices),
+          hasMore: _hasMoreServices,
+        ),
+      );
+    } catch (e) {
+      emit(
+        currentState.copyWith(
+          isLoadingMore: false,
+          loadMoreError: 'Error loading more services: $e',
+        ),
+      );
+    } finally {
+      _isLoadingMoreServices = false;
     }
   }
 

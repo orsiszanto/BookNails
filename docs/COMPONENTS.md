@@ -76,15 +76,6 @@ App (main.dart)
 │   │   └── DataAccess
 │   │       └── BookingRepository
 │   │
-│   ├── Gallery
-│   │   ├── Screens
-│   │   │   └── GalleryScreen
-│   │   ├── Widgets
-│   │   │   ├── GalleryGrid
-│   │   │   └── GalleryItemCard
-│   │   └── DataAccess
-│   │       └── GalleryRepository
-│   │
 │   ├── Profile
 │   │   ├── Screens
 │   │   │   └── ProfileScreen
@@ -96,14 +87,12 @@ App (main.dart)
 │   │   │   ├── DashboardScreen
 │   │   │   ├── AppointmentManagementScreen
 │   │   │   ├── ServiceManagementScreen
-│   │   │   ├── GalleryManagementScreen
 │   │   │   ├── ProfileManagementScreen
 │   │   │   └── AvailabilityManagementScreen
 │   │   ├── Widgets
 │   │   │   ├── AppointmentItem
 │   │   │   ├── StatusUpdateDialog
 │   │   │   ├── ServiceForm
-│   │   │   └── GalleryUploadWidget
 │   │   └── DataAccess
 │   │       └── NailArtistRepository
 │   │
@@ -148,12 +137,10 @@ Az alábbi táblázat bemutatja a fő képernyőket és azok komponenseit.
 | Foglalás létrehozása    | BookingCreateScreen, CalendarWidget, TimeSlotSelector, AppTextField, AppButton                                        |
 | Saját foglalások        | BookingListScreen, BookingCard, BookingStatusChip                                                                     |
 | Foglalás részletek      | BookingDetailScreen, BookingStatusChip, ConfirmDialog                                                                 |
-| Galéria                 | GalleryScreen, GalleryGrid, GalleryItemCard                                                                           |
 | Profil                  | ProfileScreen, AppTextField, AppButton                                                                                |
 | Nail artist dashboard   | DashboardScreen                                                                                                       |
 | Foglalások kezelése     | AppointmentManagementScreen, AppointmentItem, StatusUpdateDialog                                                      |
 | Szolgáltatások kezelése | ServiceManagementScreen, ServiceForm                                                                                  |
-| Galéria kezelése        | GalleryManagementScreen, GalleryUploadWidget                                                                          |
 | Profil kezelése         | ProfileManagementScreen                                                                                               |
 | Elérhetőség kezelése    | AvailabilityManagementScreen                                                                                          |
 | Hiba / jogosultság      | ErrorState                                                                                                            |
@@ -173,7 +160,7 @@ Auth -> Home -> Services -> Service Details -> Booking -> My Appointments -> App
 ### Nail artist flow
 
 ```text
-Auth -> Dashboard -> (Appointments / Services / Gallery / Profile / Availability)
+Auth -> Dashboard -> (Appointments / Services / Profile / Availability)
 ```
 
 ### Navigációs megoldás
