@@ -2,7 +2,7 @@ class User {
   final String uid;
   final String name;
   final String email;
-  final String role; // 'user' or 'nail_artist'
+  final String role; // 'user' or 'admin'
   final String? phoneNumber;
   final DateTime createdAt;
   final DateTime? updatedAt;

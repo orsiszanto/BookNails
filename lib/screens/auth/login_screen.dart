@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../bloc/cubit/auth_cubit.dart';
+import '../../bloc/cubit/user_cubit.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import '../../shared/widgets/app_text_field.dart';
 import '../../theme/app_spacing.dart';
@@ -71,10 +72,23 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSignInSuccess) {
-            // Clear fields and navigate to home on successful login
-            _emailController.clear();
-            _passwordController.clear();
-            context.goNamed('home');
+            () async {
+              final userCubit = context.read<UserCubit>();
+              await userCubit.fetchUser(state.uid);
+
+              if (!context.mounted) return;
+
+              _emailController.clear();
+              _passwordController.clear();
+
+              if (userCubit.state is UserDetailLoaded &&
+                  (((userCubit.state as UserDetailLoaded).user.role == 'admin') ||
+                      ((userCubit.state as UserDetailLoaded).user.role == 'nail_artist'))) {
+                context.goNamed('admin-dashboard');
+              } else {
+                context.goNamed('home');
+              }
+            }();
           } else if (state is AuthError) {
             // Clear password field and show error message
             _passwordController.clear();

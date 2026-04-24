@@ -10,6 +10,7 @@ import 'screens/home/home_screen.dart';
 import 'screens/profile/profile_screen.dart';
 import 'screens/services/service_list_screen.dart';
 import 'screens/booking/booking_screen.dart';
+import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/error/error_screen.dart';
 import 'bloc/cubit/auth_cubit.dart';
 import 'bloc/cubit/category_cubit.dart';
@@ -94,6 +95,26 @@ final GoRouter _router = GoRouter(
       path: '/home',
       name: 'home',
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/admin',
+      name: 'admin-dashboard',
+      builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    GoRoute(
+      path: '/admin/:section',
+      name: 'admin-management',
+      builder: (context, state) {
+        final section = AdminManagementSectionX.fromRouteValue(
+          state.pathParameters['section'],
+        );
+
+        if (section == null) {
+          return const ErrorScreen(message: 'Ismeretlen admin szekció');
+        }
+
+        return AdminManagementScreen(section: section);
+      },
     ),
     GoRoute(
       path: '/profile',
