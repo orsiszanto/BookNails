@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../shared/validators/auth_validators.dart';
 
 /// FirebaseAuth wrapper service
 class AuthService {
@@ -12,6 +13,21 @@ class AuthService {
     required String name,
   }) async {
     try {
+      final emailError = AuthValidators.validateEmail(email);
+      if (emailError != null) {
+        throw FirebaseAuthException(code: 'invalid-email', message: emailError);
+      }
+
+      final nameError = AuthValidators.validateName(name);
+      if (nameError != null) {
+        throw FirebaseAuthException(code: 'invalid-name', message: nameError);
+      }
+
+      final passwordError = AuthValidators.validateRegistrationPassword(password);
+      if (passwordError != null) {
+        throw FirebaseAuthException(code: 'invalid-password', message: passwordError);
+      }
+
       final UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -43,6 +59,16 @@ class AuthService {
     required String password,
   }) async {
     try {
+      final emailError = AuthValidators.validateEmail(email);
+      if (emailError != null) {
+        throw FirebaseAuthException(code: 'invalid-email', message: emailError);
+      }
+
+      final passwordError = AuthValidators.validateRequiredPassword(password);
+      if (passwordError != null) {
+        throw FirebaseAuthException(code: 'invalid-password', message: passwordError);
+      }
+
       return await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -157,6 +183,11 @@ class AuthService {
 
   Future<void> resetPassword(String email) async {
     try {
+      final emailError = AuthValidators.validateEmail(email);
+      if (emailError != null) {
+        throw FirebaseAuthException(code: 'invalid-email', message: emailError);
+      }
+
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       _handleAuthException(e);
@@ -171,7 +202,7 @@ class AuthService {
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   void _handleAuthException(FirebaseAuthException e) {
-    // Later: proper error handling
-    print('Auth error: ${e.code} - ${e.message}');
+    // Avoid logging sensitive exception details in production-facing code.
+    print('Auth error: ${e.code}');
   }
 }

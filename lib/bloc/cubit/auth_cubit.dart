@@ -53,11 +53,9 @@ class AuthCubit extends Cubit<AuthState> {
         uid: userCredential.user!.uid,
         email: userCredential.user!.email ?? '',
       ));
-    } catch (e, stackTrace) {
-      print('❌ Error during sign up: $e');
-      print('Stack trace: $stackTrace');
+    } catch (_, stackTrace) {
       emit(AuthError(
-        'Error during sign up: $e',
+        'Sikertelen regisztráció.',
         stackTrace: stackTrace,
       ));
     }
@@ -78,9 +76,9 @@ class AuthCubit extends Cubit<AuthState> {
         uid: userCredential.user!.uid,
         email: userCredential.user!.email ?? '',
       ));
-    } catch (e, stackTrace) {
+    } catch (_, stackTrace) {
       emit(AuthError(
-        'Error during sign in: $e',
+        'Sikertelen bejelentkezés.',
         stackTrace: stackTrace,
       ));
     }
@@ -92,9 +90,9 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthLoading());
       await _authService.signOut();
       emit(const AuthSignOutSuccess());
-    } catch (e, stackTrace) {
+    } catch (_, stackTrace) {
       emit(AuthError(
-        'Error during sign out: $e',
+        'Sikertelen kijelentkezés.',
         stackTrace: stackTrace,
       ));
     }
@@ -106,9 +104,9 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthLoading());
       await _authService.resetPassword(email);
       emit(AuthPasswordResetSent(email));
-    } catch (e, stackTrace) {
+    } catch (_, stackTrace) {
       emit(AuthError(
-        'Error sending password reset email: $e',
+        'Nem sikerült elküldeni a jelszó-visszaállító emailt.',
         stackTrace: stackTrace,
       ));
     }
@@ -151,9 +149,9 @@ class AuthCubit extends Cubit<AuthState> {
         currentPassword: currentPassword,
       );
       emit(const AuthSignOutSuccess());
-    } catch (e, stackTrace) {
+    } catch (_, stackTrace) {
       emit(AuthError(
-        'Error deleting account: $e',
+        'Nem sikerült törölni a fiókot.',
         stackTrace: stackTrace,
       ));
       rethrow;

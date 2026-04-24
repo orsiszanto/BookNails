@@ -15,6 +15,7 @@ class AppTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
   final TextInputAction? textInputAction;
+  final AutovalidateMode? autovalidateMode;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final VoidCallback? onSuffixIconPressed;
@@ -32,6 +33,7 @@ class AppTextField extends StatefulWidget {
     this.onChanged,
     this.validator,
     this.textInputAction,
+    this.autovalidateMode,
     this.prefixIcon,
     this.suffixIcon,
     this.onSuffixIconPressed,
@@ -78,8 +80,8 @@ class _AppTextFieldState extends State<AppTextField> {
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
-        // TextField
-        TextField(
+        // TextFormField
+        TextFormField(
           controller: widget.controller,
           focusNode: _focusNode,
           keyboardType: widget.keyboardType,
@@ -87,6 +89,8 @@ class _AppTextFieldState extends State<AppTextField> {
           maxLines: widget.obscureText ? 1 : widget.maxLines,
           maxLength: widget.maxLength,
           onChanged: widget.onChanged,
+          validator: widget.validator,
+          autovalidateMode: widget.autovalidateMode,
           textInputAction: widget.textInputAction,
           decoration: InputDecoration(
             hintText: widget.hint,

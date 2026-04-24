@@ -5,6 +5,7 @@ import '../../bloc/cubit/auth_cubit.dart';
 import '../../bloc/cubit/user_cubit.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import '../../shared/widgets/app_text_field.dart';
+import '../../shared/validators/auth_validators.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_text_styles.dart';
 
@@ -17,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordHidden = true;
@@ -29,18 +31,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kérem adja meg az email és jelszó mezőket'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) {
       return;
     }
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
 
     context.read<AuthCubit>().signIn(
           email: email,
@@ -51,10 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handlePasswordReset() {
     final email = _emailController.text.trim();
 
-    if (email.isEmpty) {
+    final validationError = AuthValidators.validateEmail(email);
+    if (validationError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kérem adja meg az email címét'),
+        SnackBar(
+          content: Text(validationError),
           duration: Duration(seconds: 2),
         ),
       );
@@ -111,96 +109,105 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
         },
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: AppSpacing.l),
-              const Text(
-                'BookNails',
-                style: AppTextStyles.displayLarge,
-                textAlign: TextAlign.center,
-                semanticsLabel: 'BookNails - Oldal cím',
-              ),
-              const SizedBox(height: AppSpacing.s),
-              const Text(
-                'Körmös szalon foglalási rendszer',
-                style: AppTextStyles.bodyMedium,
-                textAlign: TextAlign.center,
-                semanticsLabel: 'Körmös szalon foglalási rendszer - Alcím',
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              // Email field
-              AppTextField(
-                label: 'Email',
-                hint: 'jelszo@example.com',
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                prefixIcon: Icons.email,
-              ),
-              const SizedBox(height: AppSpacing.m),
-              // Password field
-              AppTextField(
-                label: 'Jelszó',
-                hint: '••••••••',
-                controller: _passwordController,
-                obscureText: _isPasswordHidden,
-                prefixIcon: Icons.lock,
-                suffixIcon:
-                    _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
-                onSuffixIconPressed: () {
-                  setState(() => _isPasswordHidden = !_isPasswordHidden);
-                },
-              ),
-              const SizedBox(height: AppSpacing.m),
-              // Forgot password link
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: _handlePasswordReset,
-                  child: const Text('Elfelejtett jelszó?'),
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: AppSpacing.l),
+                const Text(
+                  'BookNails',
+                  style: AppTextStyles.displayLarge,
+                  textAlign: TextAlign.center,
+                  semanticsLabel: 'BookNails - Oldal cím',
                 ),
-              ),
-              const SizedBox(height: AppSpacing.l),
-              // Login button with loading state
-              SizedBox(
-                width: double.infinity,
-                child: BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, state) {
-                    final isLoading = state is AuthLoading;
-
-                    return ElevatedButton(
-                      onPressed: isLoading ? null : _handleLogin,
-                      child: isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation(Colors.white),
-                              ),
-                            )
-                          : const Text('Bejelentkezés'),
-                    );
+                const SizedBox(height: AppSpacing.s),
+                const Text(
+                  'Körmös szalon foglalási rendszer',
+                  style: AppTextStyles.bodyMedium,
+                  textAlign: TextAlign.center,
+                  semanticsLabel: 'Körmös szalon foglalási rendszer - Alcím',
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                // Email field
+                AppTextField(
+                  label: 'Email',
+                  hint: 'jelszo@example.com',
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  prefixIcon: Icons.email,
+                  validator: AuthValidators.validateEmail,
+                ),
+                const SizedBox(height: AppSpacing.m),
+                // Password field
+                AppTextField(
+                  label: 'Jelszó',
+                  hint: '••••••••',
+                  controller: _passwordController,
+                  obscureText: _isPasswordHidden,
+                  textInputAction: TextInputAction.done,
+                  prefixIcon: Icons.lock,
+                  suffixIcon: _isPasswordHidden
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  onSuffixIconPressed: () {
+                    setState(() => _isPasswordHidden = !_isPasswordHidden);
                   },
+                  validator: AuthValidators.validateRequiredPassword,
                 ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-              // Sign up link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Nincs még fiókom? '),
-                  TextButton(
-                    onPressed: () {
-                      context.pushNamed('registration');
-                    },
-                    child: const Text('Regisztráció'),
+                const SizedBox(height: AppSpacing.m),
+                // Forgot password link
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: _handlePasswordReset,
+                    child: const Text('Elfelejtett jelszó?'),
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: AppSpacing.l),
+                // Login button with loading state
+                SizedBox(
+                  width: double.infinity,
+                  child: BlocBuilder<AuthCubit, AuthState>(
+                    builder: (context, state) {
+                      final isLoading = state is AuthLoading;
+
+                      return ElevatedButton(
+                        onPressed: isLoading ? null : _handleLogin,
+                        child: isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.white),
+                                ),
+                              )
+                            : const Text('Bejelentkezés'),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.m),
+                // Sign up link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Nincs még fiókom? '),
+                    TextButton(
+                      onPressed: () {
+                        context.pushNamed('registration');
+                      },
+                      child: const Text('Regisztráció'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
