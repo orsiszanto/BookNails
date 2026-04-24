@@ -115,8 +115,6 @@ class UserCubit extends Cubit<UserState> {
       final updatedUser = await _userService.getUser(uid);
       if (updatedUser != null) {
         emit(UserUpdated(updatedUser));
-        // Refresh the list after update
-        await fetchUsers();
       } else {
         emit(const UserError('Failed to fetch updated user'));
       }

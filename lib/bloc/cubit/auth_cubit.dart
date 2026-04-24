@@ -114,6 +114,52 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  /// Update the current user's display name
+  Future<void> updateDisplayName(String displayName) {
+    return _authService.updateDisplayName(displayName);
+  }
+
+  /// Update the current user's email after password re-authentication
+  Future<void> updateEmailWithPassword({
+    required String currentPassword,
+    required String newEmail,
+  }) {
+    return _authService.updateEmailWithPassword(
+      currentPassword: currentPassword,
+      newEmail: newEmail,
+    );
+  }
+
+  /// Update the current user's password after password re-authentication
+  Future<void> updatePasswordWithPassword({
+    required String currentPassword,
+    required String newPassword,
+  }) {
+    return _authService.updatePasswordWithPassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+  }
+
+  /// Delete the current account after password re-authentication
+  Future<void> deleteCurrentAccount({
+    required String currentPassword,
+  }) async {
+    try {
+      emit(const AuthLoading());
+      await _authService.deleteCurrentUserWithPassword(
+        currentPassword: currentPassword,
+      );
+      emit(const AuthSignOutSuccess());
+    } catch (e, stackTrace) {
+      emit(AuthError(
+        'Error deleting account: $e',
+        stackTrace: stackTrace,
+      ));
+      rethrow;
+    }
+  }
+
   /// Get the current authenticated user
   User? getCurrentUser() {
     return _authService.getCurrentUser();

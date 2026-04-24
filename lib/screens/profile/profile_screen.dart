@@ -7,11 +7,14 @@ import 'package:intl/intl.dart';
 import '../../bloc/cubit/appointment_cubit.dart';
 import '../../bloc/cubit/auth_cubit.dart';
 import '../../bloc/cubit/user_cubit.dart';
+import '../../bloc/cubit/service_cubit.dart';
 import '../../models/appointment.dart';
 import '../../models/user.dart' as app_user;
+import '../../models/service.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import '../../shared/widgets/empty_error_state.dart';
 import '../../shared/widgets/loading_indicator.dart';
+import 'profile_edit_dialogs.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_text_styles.dart';
@@ -43,6 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await Future.wait([
       context.read<UserCubit>().fetchUser(authUser.uid),
       context.read<AppointmentCubit>().fetchUserAppointments(authUser.uid),
+      context.read<ServiceCubit>().fetchServices(),
     ]);
   }
 
@@ -50,10 +54,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await _loadProfileData();
   }
 
-  void _showComingSoon(String featureName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$featureName a következő lépésben készül el')),
+  Future<void> _editBasicProfile(
+    app_user.User user,
+  ) async {
+    final saved = await showNameEditDialog(
+      context,
+      user: user,
     );
+
+    if (!saved || !mounted) return;
+
+    await _refreshProfileData();
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Profiladatok sikeresen mentve')),
+    );
+  }
+
+  Future<void> _editPhoneNumber(app_user.User user) async {
+    final saved = await showPhoneNumberEditDialog(
+      context,
+      user: user,
+    );
+
+    if (!saved || !mounted) return;
+
+    await _refreshProfileData();
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Telefonszám sikeresen mentve')),
+    );
+  }
+
+  Future<void> _editEmail(
+    app_user.User user,
+    firebase_auth.User firebaseUser,
+  ) async {
+    final saved = await showEmailEditDialog(
+      context,
+      user: user,
+      firebaseUser: firebaseUser,
+    );
+
+    if (!saved || !mounted) return;
+
+    await _refreshProfileData();
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Megerősítő email elküldve az új címre')),
+    );
+  }
+
+  Future<void> _editPassword() async {
+    final saved = await showPasswordEditDialog(
+      context,
+    );
+
+    if (!saved || !mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Jelszó sikeresen módosítva')),
+    );
+  }
+
+  Future<void> _deleteAccount(app_user.User user) async {
+    final deleted = await showDeleteAccountDialog(
+      context,
+      user: user,
+    );
+
+    if (!deleted || !mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('A fiók sikeresen törölve lett')),
+    );
+
+    if (!mounted) return;
+    context.goNamed('login');
   }
 
   void _openAppointmentDetails(Appointment appointment, app_user.User user) {
@@ -220,11 +300,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const SizedBox(height: AppSpacing.l),
                             _buildProfileDataSection(user, firebaseUser),
                             const SizedBox(height: AppSpacing.l),
-                            _buildQuickActionsSection(),
+                            _buildQuickActionsSection(user, firebaseUser),
                             const SizedBox(height: AppSpacing.l),
                             _buildAppointmentsSection(user),
                             const SizedBox(height: AppSpacing.l),
-                            _buildDangerZoneSection(),
+                            _buildDangerZoneSection(user),
                           ],
                         );
                       },
@@ -373,60 +453,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildProfileDataSection(app_user.User user, firebase_auth.User firebaseUser) {
     return _buildSectionCard(
       title: 'Profiladatok',
-      subtitle: 'A szerkesztési lehetőségek a következő lépésben lesznek bekötve.',
+      subtitle: 'A profil fő adatai itt jelennek meg.',
       child: Column(
         children: [
           _buildInfoTile(
             icon: Icons.person,
             title: 'Név',
             value: user.name,
-            onTap: () => _showComingSoon('Név módosítása'),
           ),
           const Divider(height: 1),
           _buildInfoTile(
             icon: Icons.phone,
             title: 'Telefonszám',
             value: user.phoneNumber?.isNotEmpty == true ? user.phoneNumber! : 'Nincs megadva',
-            onTap: () => _showComingSoon('Telefonszám módosítása'),
           ),
           const Divider(height: 1),
           _buildInfoTile(
             icon: Icons.email,
             title: 'Email',
             value: user.email.isNotEmpty ? user.email : (firebaseUser.email ?? ''),
-            onTap: () => _showComingSoon('Email módosítása'),
           ),
           const Divider(height: 1),
           _buildInfoTile(
             icon: Icons.lock,
             title: 'Jelszó',
             value: '••••••••',
-            onTap: () => _showComingSoon('Jelszó módosítása'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActionsSection() {
+  Widget _buildQuickActionsSection(
+    app_user.User user,
+    firebase_auth.User firebaseUser,
+  ) {
     return _buildSectionCard(
       title: 'Gyors műveletek',
-      subtitle: 'Itt később az adatkezelési funkciók lesznek elérhetők.',
+      subtitle: 'A legfontosabb profil- és biztonsági műveletek.',
       child: Column(
         children: [
           _buildActionTile(
-            icon: Icons.edit,
-            title: 'Profil szerkesztése',
-            subtitle: 'Név, telefonszám, email és jelszó módosítása',
-            onTap: () => _showComingSoon('Profil szerkesztése'),
+            icon: Icons.person,
+            title: 'Név módosítása',
+            subtitle: 'A megjelenített név átírása',
+            onTap: () => _editBasicProfile(user),
           ),
           const Divider(height: 1),
           _buildActionTile(
-            icon: Icons.delete_forever,
-            title: 'Profil törlése',
-            subtitle: 'A fiók és az adatlap végleges törlése',
-            iconColor: AppColors.error,
-            onTap: () => _showComingSoon('Profil törlése'),
+            icon: Icons.phone,
+            title: 'Telefonszám módosítása',
+            subtitle: 'Csak a telefonszám frissítése',
+            onTap: () => _editPhoneNumber(user),
+          ),
+          const Divider(height: 1),
+          _buildActionTile(
+            icon: Icons.email,
+            title: 'Email módosítása',
+            subtitle: 'Új email cím megadása és mentése',
+            onTap: () => _editEmail(user, firebaseUser),
+          ),
+          const Divider(height: 1),
+          _buildActionTile(
+            icon: Icons.lock,
+            title: 'Jelszó módosítása',
+            subtitle: 'Jelenlegi jelszóval történő frissítés',
+            onTap: () => _editPassword(),
           ),
         ],
       ),
@@ -434,23 +526,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildAppointmentsSection(app_user.User user) {
-    return BlocBuilder<AppointmentCubit, AppointmentState>(
-      builder: (context, appointmentState) {
-        return _buildSectionCard(
-          title: 'Foglalásaim',
-          subtitle: 'Megnézheted a közelmúltbeli és korábbi időpontjaidat.',
-          action: TextButton.icon(
-            onPressed: () => context.pushNamed('services'),
-            icon: const Icon(Icons.add),
-            label: const Text('Új foglalás'),
-          ),
-          child: _buildAppointmentsContent(appointmentState, user),
+    return BlocBuilder<ServiceCubit, ServiceState>(
+      builder: (context, serviceState) {
+        final services = serviceState is ServiceLoaded ? serviceState.services : const <Service>[];
+
+        return BlocBuilder<AppointmentCubit, AppointmentState>(
+          builder: (context, appointmentState) {
+            return _buildSectionCard(
+              title: 'Foglalásaim',
+              subtitle: 'Megnézheted a közelmúltbeli és korábbi időpontjaidat.',
+              action: TextButton.icon(
+                onPressed: () => context.pushNamed('services'),
+                icon: const Icon(Icons.add),
+                label: const Text('Új foglalás'),
+              ),
+              child: _buildAppointmentsContent(appointmentState, user, services),
+            );
+          },
         );
       },
     );
   }
 
-  Widget _buildAppointmentsContent(AppointmentState appointmentState, app_user.User user) {
+  Widget _buildAppointmentsContent(
+    AppointmentState appointmentState,
+    app_user.User user,
+    List<Service> services,
+  ) {
     if (appointmentState is AppointmentLoading) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: AppSpacing.m),
@@ -490,14 +592,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .map(
             (appointment) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.s),
-              child: _buildAppointmentCard(appointment, user),
+              child: _buildAppointmentCard(
+                appointment,
+                user,
+                serviceName: _serviceNameForAppointment(appointment.serviceId, services),
+              ),
             ),
           )
           .toList(),
     );
   }
 
-  Widget _buildAppointmentCard(Appointment appointment, app_user.User user) {
+  String _serviceNameForAppointment(String serviceId, List<Service> services) {
+    for (final service in services) {
+      if (service.id == serviceId) {
+        return service.name;
+      }
+    }
+    return serviceId;
+  }
+
+  Widget _buildAppointmentCard(
+    Appointment appointment,
+    app_user.User user, {
+    required String serviceName,
+  }) {
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
@@ -510,6 +629,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusM),
+                    ),
+                    child: Icon(
+                      Icons.event_available,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.m),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -521,36 +654,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Kezdés: ${appointment.startTime}',
-                          style: AppTextStyles.bodyMedium,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.s,
-                      vertical: AppSpacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _statusColor(appointment.status).withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusLargeButton),
-                    ),
-                    child: Text(
-                      _statusLabel(appointment.status),
-                      style: AppTextStyles.labelMedium.copyWith(
-                        color: _statusColor(appointment.status),
-                      ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.m),
-              _buildMiniDetailRow('Szolgáltatás', appointment.serviceId),
-              const SizedBox(height: AppSpacing.xs),
-              _buildMiniDetailRow('Időtartam', '${appointment.requestedDurationMinutes} perc'),
+              Wrap(
+                spacing: AppSpacing.s,
+                runSpacing: AppSpacing.s,
+                children: [
+                  _buildAppointmentMetaChip(
+                    icon: Icons.spa,
+                    label: 'Szolgáltatás',
+                    value: serviceName,
+                  ),
+                  _buildAppointmentMetaChip(
+                    icon: Icons.schedule,
+                    label: 'Időtartam',
+                    value: '${appointment.requestedDurationMinutes} perc',
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.m),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.s,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _statusColor(appointment.status).withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusLargeButton),
+                  ),
+                  child: Text(
+                    _statusLabel(appointment.status),
+                    style: AppTextStyles.labelMedium.copyWith(
+                      color: _statusColor(appointment.status),
+                    ),
+                  ),
+                ),
+              ),
               if (appointment.note?.trim().isNotEmpty == true) ...[
-                const SizedBox(height: AppSpacing.xs),
-                _buildMiniDetailRow('Megjegyzés', appointment.note!.trim()),
+                const SizedBox(height: AppSpacing.m),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.s),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusM),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Text(
+                    appointment.note!.trim(),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ],
           ),
@@ -559,10 +727,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildDangerZoneSection() {
+  Widget _buildAppointmentMetaChip({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s,
+        vertical: AppSpacing.s,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusM),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: AppColors.primary,
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              Text(
+                value,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDangerZoneSection(app_user.User user) {
     return _buildSectionCard(
       title: 'Biztonság',
-      subtitle: 'A fiók végleges törlése a későbbi lépésben kerül bekötésre.',
+      subtitle: 'A fiók törlése végleges művelet.',
       child: Column(
         children: [
           _buildActionTile(
@@ -570,7 +787,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             title: 'Fiók végleges törlése',
             subtitle: 'Auth és Firestore profil törlésével együtt',
             iconColor: AppColors.error,
-            onTap: () => _showComingSoon('Fiók törlése'),
+            onTap: () => _deleteAccount(user),
           ),
         ],
       ),
@@ -625,7 +842,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required IconData icon,
     required String title,
     required String value,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
   }) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -638,7 +855,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         value,
         style: AppTextStyles.bodyMedium,
       ),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: onTap != null ? const Icon(Icons.chevron_right) : null,
       onTap: onTap,
     );
   }
@@ -669,25 +886,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildMiniDetailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$label: ',
-          style: AppTextStyles.labelLarge,
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: AppTextStyles.bodyMedium,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
@@ -713,9 +911,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-
-
-
-
-
