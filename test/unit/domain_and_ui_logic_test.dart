@@ -73,7 +73,7 @@ void main() {
       expect(copied.uid, 'uid-3');
       expect(copied.name, 'Új név');
       expect(copied.email, 'user@example.com');
-      expect(copied.role, 'admin');
+      expect(copied.role,  'admin');
       expect(copied.phoneNumber, isNull);
     });
   });

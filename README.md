@@ -20,8 +20,8 @@
 ### Telepítés és futtatás
 
 ```bash
-git clone <repo-url>
-cd <projekt-mappa>
+git clone <https://github.com/mobil-alkalmazasfejlesztes-2026/projektmunka-orsiszanto>
+cd <projektmunka-orsiszanto>
 
 # Függőségek telepítése
 flutter pub get
@@ -38,27 +38,33 @@ flutter run -d <device-id>
 
 ## 📱 Letöltés / Telepítés
 
-> _[Írd ide a letölthető APK fájl elérhetőségét, vagy a tesztelési csatorna linkjét, pl. Firebase App Distribution, GitHub Releases]_
+> https://github.com/mobil-alkalmazasfejlesztes-2026/projektmunka-orsiszanto/releases/download/apk/app-release.apk_
 
 ---
 
 ## 📁 Projekt struktúra
 
 ```
-├── docs/                    # Dokumentáció
-│   ├── SPECIFICATION.md     # Funkcionális és nem-funkcionális követelmények
-│   ├── DATAMODEL.md         # Adatmodell (entitások, kapcsolatok)
-│   ├── COMPONENTS.md        # Komponens-terv (widget-fa / navigációs gráf)
-│   └── AI_PROMPT_LOG.md     # AI prompt napló
-├── lib/                     # Forráskód (Flutter)
-│   └── main.dart
-├── android/                 # Android platform-specifikus fájlok
-├── test/                    # Unit tesztek
-├── integration_test/        # Integrációs / E2E tesztek
-└── .github/workflows/       # Automatikus értékelés (ne módosítsd!)
+├── docs/                      # Dokumentáció
+│   ├── SPECIFICATION.md       # Funkcionális és nem-funkcionális követelmények
+│   ├── DATAMODEL.md           # Adatmodell (entitások, kapcsolatok)
+│   ├── COMPONENTS.md          # Komponens-terv (widget-fa / navigációs gráf)
+│   ├── AI_PROMPT_LOG.md       # AI prompt napló
+│   └── FIREBASE_COLLECTIONS_GUIDE.md # Firestore kollekció útmutató
+├── lib/                       # Forráskód (Flutter)
+│   ├── main.dart              # Alkalmazás belépési pont és router
+│   ├── bloc/                  # Állapotkezelés (Cubit & State)
+│   ├── models/                # Adatmodellek (User, Service, Appointment stb.)
+│   ├── screens/               # Képernyők (Auth, Admin, Home, Booking stb.)
+│   ├── services/              # Firebase & API szervizek
+│   ├── shared/                # Újrahasznosítható widgetek és validátorok
+│   └── theme/                 # Design system (színek, stílusok, téma)
+├── test/                      # Tesztek
+│   ├── unit/                  # Unit tesztek (logika, modellek, validáció)
+│   └── app_flow_test.dart     # Integrációs folyamat teszt
+├── android/                   # Android platform-specifikus fájlok
+└── .github/workflows/         # Automatikus értékelés
 ```
-
-> _Megjegyzés: A fenti struktúra Flutter projektre példa. A saját projektedhez igazíthatod (pl. további mappák: assets/, lib/screens/, lib/widgets/)._
 
 ---
 
