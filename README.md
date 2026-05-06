@@ -38,7 +38,7 @@ flutter run -d <device-id>
 
 ## 📱 Letöltés / Telepítés
 
-> https://github.com/mobil-alkalmazasfejlesztes-2026/projektmunka-orsiszanto/releases/download/apk/app-release.apk_
+> _https://github.com/mobil-alkalmazasfejlesztes-2026/projektmunka-orsiszanto/releases/download/apk/app-release.apk_
 
 ---
 
