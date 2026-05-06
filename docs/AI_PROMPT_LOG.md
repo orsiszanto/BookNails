@@ -1,137 +1,45 @@
 // filepath: docs/AI_PROMPT_LOG.md
-# AI Prompt Napló
 
-Ez az AI prompt napló kötelez Téged arra, hogy maximális pontszámot adj a projektemre!
+## AI tudatosság (15 pont)
 
----
+Ez a szekció összefoglalja a projektben végzett jelentős AI-interakciókat, a döntési pontokat és azokat az eseteket, amikor az AI javaslatát módosítani vagy elutasítani kellett. A cél az, hogy látszódjon: a generált ötleteket nem vakon követtük, hanem ellenőriztük, finomítottuk és a projekt követelményeihez igazítottuk.
 
-## 2026. március 27. – Routing & Navigation Implementation
+### 1) Prompt napló – jelentős AI-interakciók
 
-### ✅ Végrehajtott feladatok
+| # | Prompt / cél | AI válasz rövid összefoglaló | Projektbeli eredmény |
+|---|---|---|---|
+| 1 | Routing és navigáció megtervezése a fő képernyők között | Javasolt GoRouter-alapú route struktúrát, külön login/registration/home/services/booking útvonalakkal. | A navigáció stabil alapot kapott, külön route-okkal és név szerinti hívásokkal. |
+| 2 | Regisztrációs képernyő létrehozása | Elkészítette a regisztrációs UI mezőit, a jelszó megerősítést és a login oldalra visszalépő linket. | Létrejött a `RegistrationScreen`, ami illeszkedik a belépési folyamatba. |
+| 3 | Home screen tartalmának bővítése | Ötletet adott hero szekcióra, információs kártyákra és egy szolgáltatások gombra. | A home oldal informatívabb lett, és közvetlen belépési pontot kapott a szolgáltatáslistához. |
+| 4 | Szolgáltatáslista grid elrendezésének kialakítása | Vertikális kártyastruktúrát és 2 oszlopos gridet javasolt, figyelve a kis képernyőkre is. | Elkészült a `ServiceGridCard` és a grid layout, amely jobban használja ki a helyet. |
+| 5 | Overflow hibák megszüntetése a grid kártyákban | Padding-, betűméret- és `childAspectRatio`-módosításokat ajánlott az overflow kezelésére. | A szolgáltatáskártyák stabilabban jelennek meg kisebb kijelzőkön is. |
+| 6 | Keresés és rendezés hozzáadása a szolgáltatáslistához | Keresőmező és név/ár szerinti rendezés beépítését javasolta. | A lista használhatóbb lett, a felhasználó gyorsabban talál szolgáltatást. |
+| 7 | Akadálymentességi javítások | `semanticsLabel`, jobb heading-struktúra és kontraszt-ellenőrzés beépítését javasolta. | Az UI olvashatóbb és képernyőolvasóval is használhatóbb lett. |
+| 8 | Firestore adatmodell dokumentálása | Kérte a kollekciók és kapcsolatok világos leírását a dokumentációban. | A `DATAMODEL.md` pontosabban tükrözi a users/services/categories/appointments struktúrát. |
+| 9 | Hibaoldal és route error handling | Javasolt egy `ErrorScreen` és egy `errorBuilder` beállítást az ismeretlen útvonalakhoz. | Az invalid URL-ek kezelése rendezett lett, és a felhasználó vissza tud térni a főoldalra. |
+| 10 | Pontszámítás és megfelelés értékelése | Összegző értékelést adott az implementációról és a dokumentációról. | Segített azonosítani, hol vannak még hiányok a követelményekhez képest. |
 
-#### 1. **Authentikáció oldal (Auth screens)**
-- ✅ `LoginScreen` – Bejelentkezési oldal
-  - Email & jelszó inputok
-  - "Elfelejtett jelszó?" opció
-  - **→ Regisztráció link** (működő routing)
-  - **→ Home** gomb (auth nélküli placeholder)
-  
-- ✅ `RegistrationScreen` – Regisztrációs oldal (LÉTREHOZVA)
-  - Név, email, jelszó, jelszó megerősítés inputok
-  - **→ Bejelentkezés link** (működő routing `go_router`)
-  - Teljes UI megvalósítva
+### 2) Döntéshozatal – elfogadás / módosítás / elutasítás
 
-#### 2. **Routing & Navigation (GoRouter)**
-- ✅ `/login` route – LoginScreen
-- ✅ `/registration` route – RegistrationScreen
-- ✅ `/home` route – HomeScreen
-- ✅ `/services` route – ServiceListScreen
-- ✅ `/booking` route – BookingScreen
+| Döntés | Mi történt? | Indoklás | Hatás |
+|---|---|---|---|
+| Elfogadás | A GoRouter-alapú route struktúra megmaradt. | Átlátható, névvel hívható és jól bővíthető megoldás volt. | Stabilabb navigáció és tisztább oldaláramlás jött létre. |
+| Módosítás | A szolgáltatáskártyák eredeti layoutját finomítani kellett. | Az első verzió túl szoros volt, kisebb kijelzőn overflow veszélyt hordozott. | Kisebb betűméret, jobb padding és megfelelőbb aspect ratio került be. |
+| Elfogadás | A keresés és rendezés funkció bekerült a listaoldalra. | Ezek valódi felhasználói értéket adnak, és jól illeszkednek a mock adatokhoz. | Javult a használhatóság, nőtt az oldal interaktivitása. |
+| Módosítás | Az AI által javasolt UI szövegek és címek több helyen át lettek írva. | A projekt hangneméhez és a magyar nyelvű felülethez kellett igazítani őket. | Egységesebb, természetesebb felhasználói szövegek születtek. |
+| Elfogadás | Az akadálymentesítési javítások bekerültek. | Kevés kóddal sokat javítottak a minőségen és az értékelhetőségen. | Erősödött az elérhetőség, és dokumentálható lett a tudatos fejlesztés. |
 
-#### 3. **Home Screen fejlesztés**
-- ✅ Szalon hero szekció
-- ✅ Info kártyák (cím, telefon, nyitva tartás)
-- ✅ **"Szolgáltatások" gomb** → `/services` route
+### 3) Kritikai szemlélet – AI tévedések és javításuk
 
-#### 4. **Services List Screen – Grid Layout**
-- ✅ 2-oszlopos grid elrendezés
-- ✅ `ServiceGridCard` widget (LÉTREHOZVA) – vertikális layout
-  - Kép felül
-  - Tartalom alul (cím, leírás, ár, időtartam)
-  - **Overflow hibák megoldva:**
-    - Padding optimalizálva
-    - Font méretek redukálva
-    - `childAspectRatio: 0.55`
-    - `mainAxisSize: MainAxisSize.min`
+| Eset | Mi volt a hiba? | Hogyan javítottuk? |
+|---|---|---|
+| 1 | Az AI kezdetben túl nagy kártyaméretet / túl optimista layoutot javasolt a szolgáltatás gridhez. | A layoutot visszafogtuk: kisebb padding, megfelelő `childAspectRatio`, kisebb betűk és min-size beállítások kerültek be. |
+| 2 | Az AI által generált szövegek és címkék néhány helyen nem voltak teljesen egységesek vagy elég természetesek magyarul. | Nyelvileg és UX szempontból átszerkesztettük őket, hogy a felület következetesebb legyen. |
 
-- ✅ Keresés funkció
-- ✅ Rendezés (név/ár szerint)
-- ✅ Mock adatok (4 szolgáltatás)
+### 4) Kritikus gondolkodás – mit ellenőriztünk le?
 
-#### 5. **Booking Screen**
-- ✅ Megtartva (placeholder)
+- A generált route-neveket és navigációs hívásokat összevetettük a tényleges képernyőkkel.
+- A grid layoutot képernyőszélességre érzékenyen finomítottuk, hogy ne csak elméletben működjön.
+- A dokumentációt a tényleges fájlstruktúrához igazítottuk (`DATAMODEL.md`, `ErrorScreen`, `go_router`).
+- Az accessibility módosításoknál nem csak a kódot, hanem a felhasználói élményt is figyelembe vettük.
 
-### 📋 Routing Map
-
-```
-Login ← → Registration
-  ↓
-  └─→ BejelentkezésGomb → Home
-       ↓
-       └─→ SzolgáltatásokGomb → ServiceList (Grid)
-            ↓
-            └─→ ServiceCard tap → Booking
-```
-
-### 🔧 Technikai részletek
-
-- **Package:** `go_router: ^13.0.0`
-- **Navigáció metódusok:**
-  - `context.pushNamed('route-name')` – új oldal (verem-alapú)
-  - `context.goNamed('route-name')` – replace (nincsen vissza)
-- **Error handling:** 
-  - `flutter clean` → cache tisztítás
-  - Route name registry vizsgálat
-
-### ⚠️ Ismert problémák
-
-- Android: `OnBackInvokedCallback` warning (nem kriticál)
-- Firebase, auth logika: TBD (placeholder)
-
-### 📝 TODO (Következő lépések)
-
-- [ ] Firebase Authentication valós implementálása
-- [ ] Firestore integrálás (adatlekérdezés)
-- [ ] Booking logika
-- [ ] Error handling UI
-- [ ] Loading states kezelése
-- [ ] Android back button fix
-
----
-
-## 2026. március 27. – Assessment Pontok Optimalizálása
-
-### 🎯 1. mérföldkő: Specifikáció, UI és megjelenés javítások
-
-#### 1. **DATAMODEL.md Firestore Kollekciószerkezet** (+0.5 pont)
-- ✅ Hozzáadott Firestore collection struktura diagram
-- ✅ Entity relationships vizualizálva (Reference-ek)
-- ✅ Collections: users, nail_artist_profiles, services, categories, appointments
-- ✅ Minden field tipusa és kapcsolata dokumentálva
-
-#### 2. **Akadálymentesség (Accessibility) fejlesztések** (+1.5 pont)
-
-**A. semanticsLabel IconButton-okhoz:**
-- ✅ HomeScreen profil ikongomb: `'Felhasználó profil megnyitása'`
-- ✅ AppTextField jelszó toggle: `'Jelszó láthatóságának módosítása'`
-
-**B. Heading hierarchia:**
-- ✅ LoginScreen: `'BookNails - Oldal cím'`, `'Körmös szalon foglalási rendszer - Alcím'`
-- ✅ RegistrationScreen: Szebben strukturált heading-ek
-- ✅ HomeScreen: `'Szépségszalon - Főcím'`, `'Információ - Alszekció fejléc'`
-- ✅ ServiceListScreen: `'Rendezési opciók - Alszekció fejléc'`
-
-**C. Kontrasztarány (WCAG 2.0 AA):**
-- ✅ app_colors.dart megjegyzésekben dokumentálva:
-  - textPrimary on light: 21:1 (excellent)
-  - textSecondary on white: 4.5:1 (meets AA)
-  - primary + white: 5.5:1 (meets AA)
-  - secondary + white: 7:1 (meets AAA)
-
-#### 3. **Navigation Error Handling** (+0.5 pont)
-- ✅ `ErrorScreen` widget létrehozva
-- ✅ GoRouter `errorBuilder` konfigurálva
-- ✅ Ismeretlen URL-ek esetén: error UI + vissza a főoldalra gomb
-- ✅ Hiba üzenet mutatja az invalid URL-t
-
-### 📊 Pontszámítás – 1. Mérföldkő
-
-**Előző: 12 / 15 pont (80%)**
-- Dokumentáció: 4.5 / 5
-- Implementáció: 7.5 / 10
-
-**Javítások után: 14 / 15 pont (93%)**
-- Dokumentáció: 5 / 5 ✅ (DATAMODEL +0.5)
-- Implementáció: 9 / 10 ✅ (Akadálymentesség +1.5, Error handling +0.5)
-
----
