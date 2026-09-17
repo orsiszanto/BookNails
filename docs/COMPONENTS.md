@@ -1,21 +1,21 @@
 // filepath: docs/COMPONENTS.md
 
-# Komponens-terv
+# Component Design
 
 <small>
-Név: Szántó Orsolya
+Name: Szántó Orsolya
 </small>
 
-# 1.1 Dokumentáció
+# 1.1 Documentation
 
-## 1.1.3 Komponens-terv
+## 1.1.3 Component Design
 
 ---
 
-## Komponensfa
+## Component Tree
 
-Az alkalmazás Flutterben, widget-alapú architektúrával készül, BLoC/Cubit állapotkezeléssel és Firebase backend integrációval.
-Az alábbi komponensfa a fő modulok és azok kapcsolatát mutatja.
+The application is built in Flutter using a widget-based architecture, BLoC/Cubit state management, and Firebase backend integration.
+The component tree below shows the main modules and their relationships.
 
 ```text
 App (main.dart)
@@ -123,33 +123,33 @@ App (main.dart)
 
 ---
 
-## Modulok / képernyők
+## Modules / Screens
 
-Az alábbi táblázat bemutatja a fő képernyőket és azok komponenseit.
+The table below presents the main screens and their components.
 
-| Képernyő                | Használt komponensek                                                                                                  |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Bejelentkezés           | LoginScreen, AuthForm, AppTextField, AppButton, ErrorState                                                            |
-| Regisztráció            | RegisterScreen, AuthForm, AppTextField, AppButton                                                                     |
-| Home                    | HomeScreen, SalonInfoCard                                                                                             |
-| Szolgáltatáslista       | ServiceListScreen, ServiceCard, ServiceSearchField, ServiceFilterBar, PriceSortDropdown, EmptyState, LoadingIndicator |
-| Szolgáltatás részletek  | ServiceDetailScreen, AppButton                                                                                        |
-| Foglalás létrehozása    | BookingCreateScreen, CalendarWidget, TimeSlotSelector, AppTextField, AppButton                                        |
-| Saját foglalások        | BookingListScreen, BookingCard, BookingStatusChip                                                                     |
-| Foglalás részletek      | BookingDetailScreen, BookingStatusChip, ConfirmDialog                                                                 |
-| Profil                  | ProfileScreen, AppTextField, AppButton                                                                                |
-| Nail artist dashboard   | DashboardScreen                                                                                                       |
-| Foglalások kezelése     | AppointmentManagementScreen, AppointmentItem, StatusUpdateDialog                                                      |
-| Szolgáltatások kezelése | ServiceManagementScreen, ServiceForm                                                                                  |
-| Profil kezelése         | ProfileManagementScreen                                                                                               |
-| Elérhetőség kezelése    | AvailabilityManagementScreen                                                                                          |
-| Hiba / jogosultság      | ErrorState                                                                                                            |
+| Screen                  | Used components                                                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Login                   | LoginScreen, AuthForm, AppTextField, AppButton, ErrorState                                                             |
+| Registration            | RegisterScreen, AuthForm, AppTextField, AppButton                                                                      |
+| Home                    | HomeScreen, SalonInfoCard                                                                                               |
+| Service list            | ServiceListScreen, ServiceCard, ServiceSearchField, ServiceFilterBar, PriceSortDropdown, EmptyState, LoadingIndicator |
+| Service details         | ServiceDetailScreen, AppButton                                                                                           |
+| Booking creation        | BookingCreateScreen, CalendarWidget, TimeSlotSelector, AppTextField, AppButton                                         |
+| My appointments         | BookingListScreen, BookingCard, BookingStatusChip                                                                      |
+| Appointment details     | BookingDetailScreen, BookingStatusChip, ConfirmDialog                                                                    |
+| Profile                 | ProfileScreen, AppTextField AppButton                                                                                   |
+| Nail artist dashboard   | DashboardScreen                                                                                                          |
+| Appointment management | AppointmentManagementScreen, AppointmentItem, StatusUpdateDialog                                                       |
+| Service management      | ServiceManagementScreen, ServiceForm                                                                                     |
+| Profile management      | ProfileManagementScreen                                                                                                  |
+| Availability management | AvailabilityManagementScreen                                                                                             |
+| Error / access          | ErrorState                                                                                                              |
 
 ---
 
-## Navigációs logika
+## Navigation Logic
 
-Az alkalmazás navigációja szerepkör alapú.
+Application navigation is role-based.
 
 ### User flow
 
@@ -163,39 +163,39 @@ Auth -> Home -> Services -> Service Details -> Booking -> My Appointments -> App
 Auth -> Dashboard -> (Appointments / Services / Profile / Availability)
 ```
 
-### Navigációs megoldás
+### Navigation solution
 
-* Router alapú navigáció (GoRouter vagy Navigator 2.0)
-* AuthGuard: csak bejelentkezett felhasználók
-* RoleGuard: role alapú képernyők
-* Bottom navigation a fő képernyők között
-* Stack alapú navigáció részletekhez
-
----
-
-## Architektúra
-
-Az alkalmazás moduláris felépítésű:
-
-* **Core**: alap szolgáltatások (auth, firestore, error handling)
-* **Features**: domain specifikus modulok
-* **Shared**: újrahasznosítható UI komponensek
-* **Repository layer**: adatkezelés Firebase-en keresztül
-
-Ez az architektúra biztosítja:
-
-* a kód átláthatóságát
-* a skálázhatóságot
-* a tesztelhetőséget
-* a tiszta adatfolyamot
+* Router-based navigation (GoRouter or Navigator 2.0)
+* AuthGuard: only authenticated users
+* RoleGuard: role-based screens
+* Bottom navigation for main screens
+* Stack-based navigation for details screens
 
 ---
 
-## Megjegyzések
+## Architecture
 
-* A foglalási rendszer a szolgáltatás időtartamára épül.
-* A slot kiválasztás dinamikusan történik a kiválasztott szolgáltatás alapján.
-* Az értesítések NotificationService segítségével kezelhetők.
-* A Shared komponensek biztosítják az egységes design rendszert.
+The application has a modular structure:
+
+* **Core**: base services (auth, firestore, error handling)
+* **Features**: domain-specific modules
+* **Shared**: reusable UI components
+* **Repository layer**: data management through Firebase
+
+This architecture ensures:
+
+* code clarity
+* scalability
+* testability
+* a clean data flow
+
+---
+
+## Notes
+
+* The booking system is based on service duration.
+* Slot selection is handled dynamically according to the selected service.
+* Notifications can be managed through NotificationService.
+* Shared components ensure a consistent design system.
 
 ---

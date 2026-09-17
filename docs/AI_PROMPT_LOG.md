@@ -1,45 +1,51 @@
 // filepath: docs/AI_PROMPT_LOG.md
 
-## AI tudatosság (15 pont)
+## AI awareness (15 points)
 
-Ez a szekció összefoglalja a projektben végzett jelentős AI-interakciókat, a döntési pontokat és azokat az eseteket, amikor az AI javaslatát módosítani vagy elutasítani kellett. A cél az, hogy látszódjon: a generált ötleteket nem vakon követtük, hanem ellenőriztük, finomítottuk és a projekt követelményeihez igazítottuk.
+This section summarizes the major AI interactions in the project, the decision points, and the cases where the AI suggestions had to be modified or rejected. The goal is to show that the generated ideas were not followed blindly, but were reviewed, refined, and aligned with the project requirements.
 
-### 1) Prompt napló – jelentős AI-interakciók
+### 1) Prompt log – significant AI interactions
 
-| # | Prompt / cél | AI válasz rövid összefoglaló | Projektbeli eredmény |
+| # | Prompt / goal | Short summary of AI response | Project result |
 |---|---|---|---|
-| 1 | Routing és navigáció megtervezése a fő képernyők között | Javasolt GoRouter-alapú route struktúrát, külön login/registration/home/services/booking útvonalakkal. | A navigáció stabil alapot kapott, külön route-okkal és név szerinti hívásokkal. |
-| 2 | Regisztrációs képernyő létrehozása | Elkészítette a regisztrációs UI mezőit, a jelszó megerősítést és a login oldalra visszalépő linket. | Létrejött a `RegistrationScreen`, ami illeszkedik a belépési folyamatba. |
-| 3 | Home screen tartalmának bővítése | Ötletet adott hero szekcióra, információs kártyákra és egy szolgáltatások gombra. | A home oldal informatívabb lett, és közvetlen belépési pontot kapott a szolgáltatáslistához. |
-| 4 | Szolgáltatáslista grid elrendezésének kialakítása | Vertikális kártyastruktúrát és 2 oszlopos gridet javasolt, figyelve a kis képernyőkre is. | Elkészült a `ServiceGridCard` és a grid layout, amely jobban használja ki a helyet. |
-| 5 | Overflow hibák megszüntetése a grid kártyákban | Padding-, betűméret- és `childAspectRatio`-módosításokat ajánlott az overflow kezelésére. | A szolgáltatáskártyák stabilabban jelennek meg kisebb kijelzőkön is. |
-| 6 | Keresés és rendezés hozzáadása a szolgáltatáslistához | Keresőmező és név/ár szerinti rendezés beépítését javasolta. | A lista használhatóbb lett, a felhasználó gyorsabban talál szolgáltatást. |
-| 7 | Akadálymentességi javítások | `semanticsLabel`, jobb heading-struktúra és kontraszt-ellenőrzés beépítését javasolta. | Az UI olvashatóbb és képernyőolvasóval is használhatóbb lett. |
-| 8 | Firestore adatmodell dokumentálása | Kérte a kollekciók és kapcsolatok világos leírását a dokumentációban. | A `DATAMODEL.md` pontosabban tükrözi a users/services/categories/appointments struktúrát. |
-| 9 | Hibaoldal és route error handling | Javasolt egy `ErrorScreen` és egy `errorBuilder` beállítást az ismeretlen útvonalakhoz. | Az invalid URL-ek kezelése rendezett lett, és a felhasználó vissza tud térni a főoldalra. |
-| 10 | Pontszámítás és megfelelés értékelése | Összegző értékelést adott az implementációról és a dokumentációról. | Segített azonosítani, hol vannak még hiányok a követelményekhez képest. |
+| 1 | Planning routing and navigation between the main screens | Suggested a GoRouter-based route structure with separate login/registration/home/services/booking paths. | Navigation gained a stable foundation with distinct routes and named calls. |
+| 2 | Creating the registration screen | Created the registration UI fields, password confirmation, and a back link to the login page. | The `RegistrationScreen` was created and fits the sign-in flow. |
+| 3 | Expanding the home screen content | Suggested a hero section, info cards, and a services button. | The home page became more informative and gained a direct entry point to the service list. |
+| 4 | Designing the service list grid layout | Recommended a vertical card structure and a 2-column grid while keeping small screens in mind. | The `ServiceGridCard` and grid layout were created to use space more effectively. |
+| 5 | Fixing overflow issues in the grid cards | Suggested padding, font-size, and `childAspectRatio` adjustments to reduce overflow. | The service cards became more stable on smaller screens. |
+| 6 | Adding search and sorting to the service list | Recommended adding a search field and sorting by name/price. | The list became more usable and the user could find services faster. |
+| 7 | Accessibility improvements | Suggested `semanticsLabel`, better heading structure, and contrast checks. | The UI became more readable and more usable with screen readers. |
+| 8 | Documenting the Firestore data model | Requested a clear description of the collections and relationships in the documentation. | `DATAMODEL.md` now reflects the users/services/categories/appointments structure more accurately. |
+| 9 | Error page and route error handling | Suggested an `ErrorScreen` and `errorBuilder` configuration for unknown routes. | Invalid URLs are handled cleanly, and users can return to the main page. |
+| 10 | Score calculation and compliance evaluation | Provided a summary assessment of the implementation and documentation. | Helped identify remaining gaps relative to the project requirements. |
 
-### 2) Döntéshozatal – elfogadás / módosítás / elutasítás
+### 2) Decision-making – accepted / modified / rejected
 
-| Döntés | Mi történt? | Indoklás | Hatás |
+| Decision | What happened? | Reason | Impact |
 |---|---|---|---|
-| Elfogadás | A GoRouter-alapú route struktúra megmaradt. | Átlátható, névvel hívható és jól bővíthető megoldás volt. | Stabilabb navigáció és tisztább oldaláramlás jött létre. |
-| Módosítás | A szolgáltatáskártyák eredeti layoutját finomítani kellett. | Az első verzió túl szoros volt, kisebb kijelzőn overflow veszélyt hordozott. | Kisebb betűméret, jobb padding és megfelelőbb aspect ratio került be. |
-| Elfogadás | A keresés és rendezés funkció bekerült a listaoldalra. | Ezek valódi felhasználói értéket adnak, és jól illeszkednek a mock adatokhoz. | Javult a használhatóság, nőtt az oldal interaktivitása. |
-| Módosítás | Az AI által javasolt UI szövegek és címek több helyen át lettek írva. | A projekt hangneméhez és a magyar nyelvű felülethez kellett igazítani őket. | Egységesebb, természetesebb felhasználói szövegek születtek. |
-| Elfogadás | Az akadálymentesítési javítások bekerültek. | Kevés kóddal sokat javítottak a minőségen és az értékelhetőségen. | Erősödött az elérhetőség, és dokumentálható lett a tudatos fejlesztés. |
+| Accepted | The GoRouter-based route structure remained. | It was clear, named, and easy to extend. | Navigation became more stable and the flow was easier to follow. |
+| Modified | The original layout of the service cards had to be refined. | The first version was too tight and risked overflow on smaller screens. | Smaller font sizes, better padding, and a more suitable aspect ratio were introduced. |
+| Accepted | Search and sorting were added to the list page. | These provide real user value and fit well with the mock data. | Usability improved and the page became more interactive. |
+| Modified | The AI-generated UI text and labels were rewritten in several places. | They had to match the project tone and the Hungarian-language interface. | More consistent and natural user-facing text was produced. |
+| Accepted | Accessibility improvements were implemented. | They improved quality and evaluation potential with minimal code changes. | Accessibility improved and the development process became more conscious and documentable. |
 
-### 3) Kritikai szemlélet – AI tévedések és javításuk
+### 3) Critical perspective – AI mistakes and their fixes
 
-| Eset | Mi volt a hiba? | Hogyan javítottuk? |
+| Case | What was the problem? | How was it fixed? |
 |---|---|---|
-| 1 | Az AI kezdetben túl nagy kártyaméretet / túl optimista layoutot javasolt a szolgáltatás gridhez. | A layoutot visszafogtuk: kisebb padding, megfelelő `childAspectRatio`, kisebb betűk és min-size beállítások kerültek be. |
-| 2 | Az AI által generált szövegek és címkék néhány helyen nem voltak teljesen egységesek vagy elég természetesek magyarul. | Nyelvileg és UX szempontból átszerkesztettük őket, hogy a felület következetesebb legyen. |
+| 1 | The AI initially suggested too large a card size / overly optimistic layout for the service grid. | The layout was toned down: smaller padding, a suitable `childAspectRatio`, smaller text, and min-size adjustments were added. |
+| 2 | Some AI-generated texts and labels were not fully consistent or natural in Hungarian. | They were rewritten for language and UX consistency so the interface would feel more coherent. |
 
-### 4) Kritikus gondolkodás – mit ellenőriztünk le?
+### 4) Critical thinking – what we checked
 
-- A generált route-neveket és navigációs hívásokat összevetettük a tényleges képernyőkkel.
-- A grid layoutot képernyőszélességre érzékenyen finomítottuk, hogy ne csak elméletben működjön.
-- A dokumentációt a tényleges fájlstruktúrához igazítottuk (`DATAMODEL.md`, `ErrorScreen`, `go_router`).
-- Az accessibility módosításoknál nem csak a kódot, hanem a felhasználói élményt is figyelembe vettük.
+- We compared the generated route names and navigation calls with the actual screens.
+- We refined the grid layout responsively so it would work not only in theory.
+- We aligned the documentation with the actual file structure (`DATAMODEL.md`, `ErrorScreen`, `go_router`).
+- For accessibility updates, we considered not just the code but also the user experience.
+
+### 5) Overall assessment
+
+The AI was used as a design accelerator and review tool, not as an unquestioned source of truth. The combination of generated proposals and manual validation helped produce a more structured, user-friendly, and better-documented project outcome.
+
+---
 

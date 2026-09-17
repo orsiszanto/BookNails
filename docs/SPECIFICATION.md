@@ -1,128 +1,128 @@
 // filepath: docs/SPECIFICATION.md
-# BookNails Mobilalkalmazás
+# BookNails Mobile Application
 
-**Mobil alkalmazásfejlesztés gyakorlat**
-**Flutter + Firebase – Demonstrációs projekt**
-**2026. tavasz**
-
----
-
-## 1. Bevezetés
-
-A **BookNails** egy Flutter és Firebase alapú mobilalkalmazás, amely egy körmös és egy szalon időpontfoglalási folyamatát támogatja. Az alkalmazás lehetővé teszi a felhasználók számára a szolgáltatások megtekintését, a körmös portfóliójának böngészését, valamint időpont foglalását egy egyszerű és intuitív mobilos felületen keresztül.
-
-A projekt célja egy modern, jól strukturált, mobil-first szemléletű alkalmazás megvalósítása, amely demonstrálja a frontend és backend integrációját, valamint a több entitásos, szerepkör-alapú működést.
-
-### 1.1 Technológiai stack
-
-* **Flutter** – Keresztplatformos mobil keretrendszer
-* **Firebase** – Backend szolgáltatások
-* **Firebase Authentication** – Felhasználókezelés
-* **Cloud Firestore** – Perzisztens adattárolás
-* **Dart** – Alkalmazásfejlesztési nyelv
+**Mobile application development practice**
+**Flutter + Firebase – Demo project**
+**Spring 2026**
 
 ---
 
-## 2. Szerepkörök
+## 1. Introduction
+
+**BookNails** is a Flutter and Firebase-based mobile application that supports the booking process between a nail artist and a salon. The app allows users to browse services, view the nail artist’s portfolio, and book appointments through a simple and intuitive mobile interface.
+
+The project aims to implement a modern, well-structured, mobile-first application that demonstrates frontend and backend integration as well as multi-entity, role-based functionality.
+
+### 1.1 Technology stack
+
+* **Flutter** – Cross-platform mobile framework
+* **Firebase** – Backend services
+* **Firebase Authentication** – User management
+* **Cloud Firestore** – Persistent data storage
+* **Dart** – Application development language
+
+---
+
+## 2. Roles
 
 ### 2.1 Nail Artist
 
-A nail artist (körmös) admin jellegű szerepkörrel rendelkezik. Jogosultságai:
+The nail artist has an admin-style role. Their permissions include:
 
-* Saját profil kezelése (szalon adatok, elérhetőség)
-* Szolgáltatások létrehozása, módosítása és törlése
-* Elérhető napok és időintervallumok beállítása
-* Foglalások megtekintése
-* Foglalások jóváhagyása vagy elutasítása
-* Időtartam módosítási kérés indítása
-* Foglalások státuszának kezelése
+* Managing their own profile (salon details, availability)
+* Creating, editing, and deleting services
+* Setting available days and time intervals
+* Viewing appointments
+* Approving or rejecting appointments
+* Initiating duration change requests
+* Managing appointment status
 
 ---
 
 ### 2.2 User
 
-A user a vendég szerepkört tölti be. Jogosultságai:
+The user plays the guest role. Their permissions include:
 
-* Regisztráció és bejelentkezés
-* Körmös profil és szalon adatok megtekintése
-* Szolgáltatások böngészése és keresése
-* Szabad időpont kiválasztása
-* Foglalás létrehozása
-* Megjegyzés hozzáadása a foglaláshoz
-* Saját foglalások megtekintése
-* Lemondási kérelem indítása (48 órás szabály alapján)
-* Profiladatok szerkesztése (név, telefonszám)
-
----
-
-## 3. Funkcionális követelmények
-
-1. A felhasználó regisztrálhat e-mail és jelszó megadásával.
-2. A felhasználó bejelentkezhet Firebase Authentication segítségével.
-3. A felhasználó böngészheti a szolgáltatásokat.
-4. A felhasználó kereshet szolgáltatásokat és rendezheti azokat ár szerint.
-5. A felhasználó kiválaszthat egy szolgáltatást.
-6. A rendszer csak a szolgáltatáshoz megfelelő szabad időpontokat jeleníti meg.
-7. A felhasználó időpontot foglalhat.
-8. A foglalás állapota kezdetben „pending”.
-9. A körmös jóváhagyhatja vagy elutasíthatja a foglalást.
-10. A körmös módosítási kérést indíthat (időtartam változtatás).
-11. A felhasználó lemondási kérelmet indíthat (minimum 48 órával előtte).
-12. A felhasználó megtekintheti saját foglalásait és azok státuszát.
-13. A körmös kezelheti a szolgáltatásokat (CRUD).
-14. A körmös beállíthatja az elérhető időintervallumokat.
+* Registration and login
+* Viewing nail artist profiles and salon information
+* Browsing and searching services
+* Selecting an available time slot
+* Creating an appointment
+* Adding a note to the appointment
+* Viewing their own appointments
+* Initiating a cancellation request (based on the 48-hour rule)
+* Editing profile information (name, phone number)
 
 ---
 
-## 4. Nem-funkcionális követelmények
+## 3. Functional requirements
 
-1. Firebase Authentication alapú biztonságos bejelentkezés.
-2. Role-based hozzáférés (user vs nail artist).
-3. Mobil-first, adaptív felhasználói felület.
-4. Egységes design rendszer (színek, tipográfia, spacing).
-5. Accessibility szempontok figyelembevétele (kontraszt, olvashatóság).
-6. Loading és error state-ek kezelése.
-7. Gyors adatlekérdezés Firestore használatával.
-9. Stabil működés és hibakezelés.
-
----
-
-## 5. Mobil képernyők
-
-### 5.1 Nyilvános képernyők
-
-* **Bejelentkezés**
-* **Regisztráció**
-* **Jelszó visszaállítás** *(opcionális)*
+1. The user can register using an email and password.
+2. The user can log in using Firebase Authentication.
+3. The user can browse services.
+4. The user can search for services and sort them by price.
+5. The user can select a service.
+6. The system only shows available time slots that match the selected service.
+7. The user can book an appointment.
+8. The appointment status is initially “pending”.
+9. The nail artist can approve or reject the appointment.
+10. The nail artist can initiate a modification request (duration change).
+11. The user can initiate a cancellation request (minimum 48 hours in advance).
+12. The user can view their own appointments and their status.
+13. The nail artist can manage services (CRUD).
+14. The nail artist can configure available time intervals.
 
 ---
 
-### 5.2 User képernyők
+## 4. Non-functional requirements
 
-* **Home** – Szalon bemutatása
-* **Services** – Szolgáltatások listája
-* **Service Details** – Szolgáltatás részletei
-* **Booking** – Időpontfoglalás (naptár + slot választás)
-* **My Appointments** – Saját foglalások
-* **Appointment Details** – Foglalás részletei
-* **Profile** – Felhasználói adatok
+1. Secure login based on Firebase Authentication.
+2. Role-based access (user vs nail artist).
+3. Mobile-first, adaptive user interface.
+4. Consistent design system (colors, typography, spacing).
+5. Accessibility considerations (contrast, readability).
+6. Loading and error state handling.
+7. Fast data queries using Firestore.
+8. Stable operation and error handling.
 
 ---
 
-### 5.3 Nail Artist képernyők
+## 5. Mobile screens
 
-* **Dashboard** – Áttekintés
-* **Appointments** – Foglalások kezelése
+### 5.1 Public screens
+
+* **Login**
+* **Registration**
+* **Password reset** *(optional)*
+
+---
+
+### 5.2 User screens
+
+* **Home** – salon presentation
+* **Services** – service list
+* **Service Details** – service details
+* **Booking** – appointment booking (calendar + slot selection)
+* **My Appointments** – own appointments
+* **Appointment Details** – appointment details
+* **Profile** – user data
+
+---
+
+### 5.3 Nail Artist screens
+
+* **Dashboard** – overview
+* **Appointments** – appointment management
 * **Appointment Details**
-* **Services Management** – Szolgáltatások CRUD
-* **Profile Management** – Szalon adatok
-* **Availability Management** – Időintervallumok beállítása
+* **Services Management** – services CRUD
+* **Profile Management** – salon information
+* **Availability Management** – time interval setup
 
 ---
 
-## 6. Adatmodell (rövid áttekintés)
+## 6. Data model (brief overview)
 
-Az alkalmazás fő entitásai:
+Main entities of the application:
 
 * **User**
 * **NailArtistProfile**
@@ -130,7 +130,7 @@ Az alkalmazás fő entitásai:
 * **Category**
 * **Appointment**
 
-### Kapcsolatok
+### Relationships
 
 * User Appointment (1:N)
 * User -> NailArtistProfile (1:1)
@@ -141,11 +141,11 @@ Az alkalmazás fő entitásai:
 
 ---
 
-## 7. Telepítés és futtatás
+## 7. Installation and running
 
-A rendszer Firebase alapokon működik, külön backend szerver nem szükséges.
+The system operates on Firebase infrastructure; no separate backend server is required.
 
-Szükséges eszközök:
+Required tools:
 
 * Flutter SDK (stable)
 * Dart SDK
@@ -154,26 +154,26 @@ Szükséges eszközök:
 
 ---
 
-## 8. Mappaszerkezet
+## 8. Folder structure
 
-| Mappa / Fájl    | Leírás                       |
-| --------------- | ---------------------------- |
-| `/docs`         | Dokumentáció                 |
-| `/lib`          | Flutter alkalmazás forráskód |
-| `/lib/screens`  | Képernyők                    |
-| `/lib/widgets`  | UI komponensek               |
-| `/lib/services` | Firebase szolgáltatások      |
-| `/lib/models`   | Adatmodellek                 |
-| `/lib/cubit`    | Állapotkezelés               |
-| `/assets`       | Képek                        |
-| `README.md`     | Telepítési útmutató          |
+| Folder / File     | Description                     |
+| ----------------- | ------------------------------- |
+| `/docs`           | Documentation                   |
+| `/lib`            | Flutter application source code |
+| `/lib/screens`    | Screens                         |
+| `/lib/widgets`   | UI components                   |
+| `/lib/services`  | Firebase services               |
+| `/lib/models`    | Data models                     |
+| `/lib/cubit`     | State management                |
+| `/assets`        | Images                          |
+| `README.md`      | Installation guide              |
 
 ---
 
-## 9. Megvalósítási terv
+## 9. Implementation plan
 
-* **Fázis 1:** Alap funkciók (auth, services, UI)
-* **Fázis 2:** Foglalási rendszer és backend integráció
-* **Fázis 3:** Finomítás, tesztelés, UX javítások
+* **Phase 1:** Core features (auth, services, UI)
+* **Phase 2:** Booking system and backend integration
+* **Phase 3:** Refinement, testing, UX improvements
 
 ---

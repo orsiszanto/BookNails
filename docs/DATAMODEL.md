@@ -1,99 +1,97 @@
 // filepath: docs/DATAMODEL.md
-# Adatmodell
+# Data Model
 
 <small>
-Név: Szántó Orsolya  
-Neptun kód: H93NV2  
-h-s azonosító: h378048  
+Name: Szántó Orsolya  
 </small>
 
-# 1.1 Dokumentáció
+# 1.1 Documentation
 
-## 1.1.2 Adatmodell
+## 1.1.2 Data Model
 
 ---
 
-## Entitások
+## Entities
 
 ### User
 
-| Mező        | Leírás                                |
-| ----------- | ------------------------------------- |
-| id          | egyedi azonosító (Firebase UID)       |
-| name        | felhasználó neve                      |
-| email       | felhasználó email címe                |
-| role        | szerepkör (`user` vagy `nail_artist`) |
-| phoneNumber | telefonszám                           |
-| createdAt   | létrehozás ideje (timestamp)          |
-| updatedAt   | utolsó módosítás ideje (timestamp)    |
+| Field       | Description                              |
+| ----------- | ---------------------------------------- |
+| id          | unique identifier (Firebase UID)         |
+| name        | user name                                |
+| email       | user email address                       |
+| role        | role (`user` or `nail_artist`)           |
+| phoneNumber | phone number                             |
+| createdAt   | creation time (timestamp)                |
+| updatedAt   | last update time (timestamp)             |
 
 ---
 
 ### NailArtistProfile
 
-| Mező            | Leírás                             |
-| --------------- | ---------------------------------- |
-| id              | egyedi azonosító                   |
-| userId          | kapcsolódó user azonosító          |
-| salonName       | szalon neve                        |
-| address         | szalon címe                        |
-| phoneNumber     | szalon telefonszáma                |
-| profileImageUrl | profilkép                          |
-| workingHours    | elérhető napok és időintervallumok |
-| createdAt       | létrehozás ideje                   |
-| updatedAt       | utolsó módosítás ideje             |
+| Field           | Description                             |
+| --------------- | --------------------------------------- |
+| id              | unique identifier                       |
+| userId          | related user identifier                 |
+| salonName       | salon name                              |
+| address         | salon address                           |
+| phoneNumber     | salon phone number                      |
+| profileImageUrl | profile image                           |
+| workingHours    | available days and time intervals       |
+| createdAt       | creation time                           |
+| updatedAt       | last modification time                  |
 
 ---
 
 ### Service
 
-| Mező                | Leírás                 |
-| ------------------- | ---------------------- |
-| id                  | egyedi azonosító       |
-| nailArtistProfileId | kapcsolódó profil      |
-| categoryId          | kategória azonosító    |
-| name                | szolgáltatás neve      |
-| description         | leírás                 |
-| price               | ár                     |
-| durationMinutes     | időtartam percben      |
-| imageUrl            | kép                    |
-| isActive            | foglalható-e           |
-| createdAt           | létrehozás ideje       |
-| updatedAt           | utolsó módosítás ideje |
+| Field               | Description                  |
+| ------------------- | ---------------------------- |
+| id                  | unique identifier            |
+| nailArtistProfileId | related profile              |
+| categoryId          | category identifier          |
+| name                | service name                 |
+| description         | description                  |
+| price               | price                        |
+| durationMinutes     | duration in minutes          |
+| imageUrl            | image                        |
+| isActive            | whether the service is bookable |
+| createdAt           | creation time                |
+| updatedAt           | last modification time       |
 
 ---
 
 ### Category
 
-| Mező      | Leírás                                      |
-| --------- | ------------------------------------------- |
-| id        | egyedi azonosító                            |
-| name      | kategória neve                              |
-| type      | kategória típusa (`service`)                |
-| createdAt | létrehozás ideje                            |
+| Field    | Description                           |
+| -------- | ------------------------------------- |
+| id       | unique identifier                     |
+| name     | category name                         |
+| type     | category type (`service`)             |
+| createdAt| creation time                         |
 
 ---
 
 ### Appointment
 
-| Mező                     | Leírás                                                                                                  |
-| ------------------------ | ------------------------------------------------------------------------------------------------------- |
-| id                       | egyedi azonosító                                                                                        |
-| userId                   | foglaló user azonosító                                                                                  |
-| nailArtistProfileId      | körmös profil                                                                                           |
-| serviceId                | kiválasztott szolgáltatás                                                                               |
-| appointmentDate          | dátum                                                                                                   |
-| startTime                | kezdési időpont                                                                                         |
-| requestedDurationMinutes | eredeti időtartam                                                                                       |
-| estimatedDurationMinutes | módosított időtartam (ha van)                                                                           |
-| note                     | felhasználó megjegyzése                                                                                 |
-| status                   | státusz (`pending`, `confirmed`, `modification_requested`, `cancel_requested`, `cancelled`, `rejected`) |
-| createdAt                | létrehozás ideje                                                                                        |
-| updatedAt                | utolsó módosítás ideje                                                                                  |
+| Field                    | Description                                                                                                      |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| id                       | unique identifier                                                                                                |
+| userId                   | booking user identifier                                                                                          |
+| nailArtistProfileId      | nail artist profile                                                                                              |
+| serviceId                | selected service                                                                                                 |
+| appointmentDate          | date                                                                                                             |
+| startTime                | start time                                                                                                       |
+| requestedDurationMinutes | original duration                                                                                                 |
+| estimatedDurationMinutes | modified duration (if any)                                                                                       |
+| note                     | user note                                                                                                        |
+| status                   | status (`pending`, `confirmed`, `modification_requested`, `cancel_requested`, `cancelled`, `rejected`)            |
+| createdAt                | creation time                                                                                                    |
+| updatedAt                | last modification time                                                                                           |
 
 ---
 
-## Kapcsolatok
+## Relationships
 
 * **User 1 — N Appointment**
 * **User 1 — 1 NailArtistProfile**
@@ -104,17 +102,17 @@ h-s azonosító: h378048
 
 ---
 
-## Megjegyzések
+## Notes
 
-* Egy foglalás mindig **egy szolgáltatáshoz tartozik**.
-* A foglalások időtartama a szolgáltatás alapján kerül meghatározásra, de módosítható a körmös által.
-* A `NailArtistProfile` külön entitásként kezeli a szalonhoz kapcsolódó adatokat.
-* Az időpontok ütközésének kezelése backend (Firebase) logikával történik.
-* A foglalási státuszok workflow alapú működést biztosítanak.
+* Each appointment always belongs to **one service**.
+* Appointment duration is based on the service, but it can be modified by the nail artist.
+* The `NailArtistProfile` is treated as a separate entity for salon-related data.
+* Time-slot conflict handling is managed by backend logic (Firebase).
+* Appointment status flows are managed as a workflow.
 
 ---
 
-## Firestore kollekciószerkezet
+## Firestore collection structure
 
 ```
 firestore/

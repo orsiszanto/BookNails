@@ -8,6 +8,8 @@
 
 A Flutter mobile app concept for booking nail salon services, managing appointments, and exploring a role-based salon workflow.
 
+> Note: The current application UI is primarily in Hungarian.
+>
 > Important: This repository is published without an active Firebase backend. Firebase was intentionally removed from the project setup, so this version is not connected to a live cloud database or authentication service.
 
 ---
