@@ -10,15 +10,15 @@ A Flutter mobile app concept for booking nail salon services, managing appointme
 
 > Note: The current application UI is primarily in Hungarian.
 >
-> Important: This repository is published without an active Firebase backend. Firebase was intentionally removed from the project setup, so this version is not connected to a live cloud database or authentication service.
+> Important: This application uses an active Firebase backend for authentication, Firestore data, and file storage. The Firebase project configuration is included for the Android build.
 
 ---
 
 ## Overview
 
-BookNails is a mobile-first application designed for a modern nail salon booking experience. It supports both customer and nail artist roles, allowing users to browse services, review salon profiles, choose available time slots, and manage appointment requests through a clean, intuitive interface.
+BookNails is a mobile-first application designed for a modern nail salon booking experience. It supports customer, nail artist, and administrator workflows, allowing users to browse services, review salon profiles, choose available time slots, and manage appointment requests through a clean, intuitive interface.
 
-The project was originally planned as a Flutter + Firebase application, but the current GitHub version is intentionally published without Firebase services enabled. It is best understood as a front-end prototype and design/documentation project rather than a live production application.
+Firebase provides the application backend. Firebase Authentication manages accounts and sessions, Cloud Firestore stores users, services, categories, artist profiles, and appointments, and Firebase Storage is available for uploaded media such as gallery images.
 
 ## Why this project
 
@@ -48,7 +48,11 @@ This project demonstrates a realistic booking-app architecture for a service bus
 - Cubit / BLoC state management
 - Material Design UI
 - App-level theming and shared widgets
-- Firebase was part of the original design, but it is not active in this GitHub version
+- Firebase Core
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Storage
+- GoRouter for navigation
 
 ## Project Structure
 
@@ -69,12 +73,14 @@ This project demonstrates a realistic booking-app architecture for a service bus
 │   ├── firebase_options.dart
 │   └── main.dart
 ├── test/
+├── integration_test/
 ├── android/
 ├── analysis_options.yaml
 ├── pubspec.yaml
+├── firebase.json
+├── firestore.rules
 ├── README.md
-├── .gitignore
-└── firebase.json
+└── .gitignore
 ```
 
 ## Documentation
@@ -94,6 +100,7 @@ The project documentation is stored in the docs folder and includes the original
 - Dart SDK
 - Android Studio / Android SDK
 - a physical device or emulator
+- access to the Firebase project configured for the app (`booknail`)
 
 ### Install and run
 
@@ -105,13 +112,28 @@ flutter pub get
 flutter run
 ```
 
+The current Firebase configuration is stored in [`lib/firebase_options.dart`](lib/firebase_options.dart) and currently provides Android platform settings. The app initializes Firebase before starting the Flutter application, so a device or emulator with network access is required for authentication and cloud data.
+
 ## Firebase Status
 
-This project is intentionally published without Firebase behind it.
+Firebase is active and is part of the application runtime.
 
-- The original concept was designed around Firebase Authentication and Firestore.
-- Firebase-related backend services were later removed.
-- This repository is best treated as a mobile app prototype, concept project, and documentation archive—not as a live production app connected to a cloud backend.
+- **Firebase Authentication** handles email/password registration, login, logout, and auth-state changes.
+- **Cloud Firestore** stores users, categories, services, nail artist profiles, and appointments.
+- **Firebase Storage** is included for cloud-hosted media and gallery assets.
+- **Firestore security rules** are maintained in [`firestore.rules`](firestore.rules).
+- **Firebase initialization** is handled in `lib/main.dart` using the generated platform options.
+
+The repository also includes [`seed_firestore.js`](seed_firestore.js) for populating Firestore with demo data. It requires a Firebase Admin SDK service-account key named `firebase-key.json` in the project root. Keep that file local and never commit it.
+
+To seed the database:
+
+```bash
+npm install
+npm run seed
+```
+
+The seed script writes demo data directly to the configured Firebase project, so review the target project and service-account permissions before running it.
 
 ## Screenshots
 
