@@ -126,6 +126,8 @@ Firebase is active and is part of the application runtime.
 
 The repository also includes [`seed_firestore.js`](seed_firestore.js) for populating Firestore with demo data. It requires a Firebase Admin SDK service-account key named `firebase-key.json` in the project root. Keep that file local and never commit it.
 
+All names, email addresses, phone numbers, physical addresses, account details, and other personal information in the seed data and screenshots are fictional demo content. Do not replace them with real personal information before publishing or sharing the repository.
+
 To seed the database:
 
 ```bash
